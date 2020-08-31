@@ -14,24 +14,30 @@ const Video = styled.video`
 
 // { type, id, link, url, height, width }
 export default function (props) {
-    console.log(props.type);
+    let videoRef = React.createRef();
+
+    function handleClick() {
+        // console.log("clicked");
+        // console.log(videoRef.current.paused);
+        if (videoRef.current.paused) {
+            videoRef.current.play();
+        } else {
+            videoRef.current.pause();
+        }
+    }
 
     switch (props.type) {
         case "image":
         case "gif":
             return <Image src={props.url} alt="" />;
         case "reddit video":
-            // return (
-            //     <ReactPlayer
-            //         url={props.url}
-            //         controls={true}
-            //         style={ReactPlayerStyles}
-            //         width="100%"
-            //         height="100%"
-            //     />
-            // );
             return (
-                <Video autoPlay="autoplay">
+                <Video
+                    ref={videoRef}
+                    autoPlay="autoplay"
+                    loop
+                    onClick={handleClick}
+                >
                     <source src={props.url}></source>
                 </Video>
             );

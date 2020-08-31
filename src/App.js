@@ -15,12 +15,18 @@ const GlobalStyle = createGlobalStyle`
         padding: 0px;
     }
 
+    &.app {
+        position: relative;
+    }
+
     /* whole grid */
     &.my-masonry-grid {
         display: -webkit-box; /* Not needed if autoprefixing */
         display: -ms-flexbox; /* Not needed if autoprefixing */
         display: flex;
-        width: 75vw;
+        width: 75vw; /* 100vw * 0.75 - 17px */
+        position: absolute;
+        margin-left: calc((100vw - 75vw) / 2 - 17px)
     }
 
     /* grid columns */
@@ -52,7 +58,7 @@ class App extends React.Component {
         const parameters = {
             params: {
                 raw_json: 1,
-                limit: 5,
+                limit: 15,
                 after: `${this.state.afterId}`,
             },
         };
@@ -111,10 +117,10 @@ class App extends React.Component {
                             postObject.data.preview.images[0].source.width;
                         break;
                     case "link": // image
-                        console.log("link");
                         mediaObject.type = "link";
                         mediaObject.url =
                             postObject.data.preview.images[0].source.url; // highest resolution, can get lower
+                        console.log(`link: ${mediaObject.url}`);
                         mediaObject.height =
                             postObject.data.preview.images[0].source.height;
                         mediaObject.width =
@@ -152,20 +158,18 @@ class App extends React.Component {
     };
 
     render() {
-        console.log(`innerWidth: ${window.innerWidth}`);
         return (
             <div className="app">
                 <GlobalStyle />
                 <Heading></Heading>
-                {/* <InfiniteScroll
+
+                <InfiniteScroll
                     dataLength={this.state.mediaObjects.length}
                     next={this.fetchImages}
                     hasMore={true}
-                    loader={<Loader></Loader>}
+                    git
                     style={{ overflow: "hidden" }}
-                > */}
-
-                {/* </InfiniteScroll> */}
+                ></InfiniteScroll>
                 <Masonry
                     breakpointCols={3}
                     className="my-masonry-grid"
