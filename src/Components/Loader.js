@@ -85,7 +85,7 @@ const Loading = styled.div`
     }
 `;
 
-export default function Loader() {
+export default function () {
     return (
         <Loading>
             <div className="lds-spinner">

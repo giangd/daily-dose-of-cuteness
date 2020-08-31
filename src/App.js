@@ -1,13 +1,14 @@
 import React from "react";
 import Heading from "./Components/Heading";
 import Loader from "./Components/Loader";
-import UnsplashImage from "./Components/UnsplashImage";
+import Media from "./Components/Media";
 import axios from "axios";
 import InfiniteScroll from "react-infinite-scroll-component";
-
+import Masonry from "react-masonry-css";
 import styled, { createGlobalStyle } from "styled-components";
+
 const GlobalStyle = createGlobalStyle`
-    *{
+    * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
@@ -16,15 +17,23 @@ const GlobalStyle = createGlobalStyle`
     body {
         font-family: sans-serif
     }
-`;
 
-const WrapperImage = styled.section`
-    max-width: 70rem;
-    margin: 4rem auto;
-    display: grid;
-    grid-gap: 1em;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    grid-auto-rows: 300px;
+    &.test {
+        background-color: red;
+    }
+
+    &.my-masonry-grid {
+        display: -webkit-box; /* Not needed if autoprefixing */
+        display: -ms-flexbox; /* Not needed if autoprefixing */
+        display: flex;
+        margin-left: -30px; /* gutter size offset */
+        width: auto;
+    }
+
+    &.my-masonry-grid_column {
+        padding-left: 30px; /* gutter size */
+        background-clip: padding-box;
+    }
 `;
 
 class App extends React.Component {
@@ -59,7 +68,6 @@ class App extends React.Component {
             let mediaObjects = [];
             for (let postObject of arrayOfPostObjects) {
                 let postHint = postObject.data.post_hint;
-                let postType;
 
                 let mediaObject = {
                     type: undefined,
@@ -85,17 +93,28 @@ class App extends React.Component {
                     case "hosted:video": // reddit video
                         console.log("reddit video");
                         mediaObject.type = "reddit video";
+                        // mediaObject.url =
+                        // postObject.data.preview.images[0].source.url; // highest resolution, can get lower
+                        mediaObject.url =
+                            postObject.data.media.reddit_video.fallback_url;
+                        mediaObject.height =
+                            postObject.data.media.reddit_video.height;
+                        mediaObject.width =
+                            postObject.data.media.reddit_video.width;
+                        break;
+                    case "image": // image
+                        console.log("image");
+                        mediaObject.type = "image";
                         mediaObject.url =
                             postObject.data.preview.images[0].source.url; // highest resolution, can get lower
                         mediaObject.height =
                             postObject.data.preview.images[0].source.height;
                         mediaObject.width =
                             postObject.data.preview.images[0].source.width;
-
                         break;
-                    case "image": // image
-                        console.log("image");
-                        mediaObject.type = "image";
+                    case "link": // image
+                        console.log("link");
+                        mediaObject.type = "link";
                         mediaObject.url =
                             postObject.data.preview.images[0].source.url; // highest resolution, can get lower
                         mediaObject.height =
@@ -136,30 +155,34 @@ class App extends React.Component {
 
     render() {
         return (
-            <div>
+            <>
                 <GlobalStyle />
                 <Heading></Heading>
-
-                <InfiniteScroll
+                {/* <InfiniteScroll
                     dataLength={this.state.mediaObjects.length}
                     next={this.fetchImages}
                     hasMore={true}
                     loader={<Loader></Loader>}
                     style={{ overflow: "hidden" }}
+                > */}
+                <p className="test">hellow</p>
+
+                <Masonry
+                    breakpointCols={3}
+                    className="my-masonry-grid"
+                    columnClassName="my-masonry-grid_column"
                 >
-                    <WrapperImage>
-                        {this.state.mediaObjects.map((mediaObject) => {
-                            return (
-                                <UnsplashImage
-                                    src={`${mediaObject.url}`}
-                                    alt=""
-                                    key={`${mediaObject.id}`}
-                                />
-                            );
-                        })}
-                    </WrapperImage>
-                </InfiniteScroll>
-            </div>
+                    {this.state.mediaObjects.map((mediaObject) => {
+                        return (
+                            <Media {...mediaObject} key={`${mediaObject.id}`} />
+                        );
+                    })}
+                </Masonry>
+
+                {/* <MediaObjectsWrapper>
+                    </MediaObjectsWrapper> */}
+                {/* </InfiniteScroll> */}
+            </>
         );
     }
 }
