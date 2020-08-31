@@ -4,26 +4,13 @@ import styled from "styled-components";
 
 const Image = styled.img`
     width: 100%;
-    height: 100%;
-    object-fit: contain;
+    height: auto;
 `;
 
 const Video = styled.video`
     width: 100%;
-    height: 100%;
-    object-fit: contain;
+    height: auto;
 `;
-
-// const ReactPlayerStyles = {
-//     width: "1%",
-//     // height: "100%",
-// };
-
-// const VideoWrapper = styled.div`
-//     width: 100%;
-//     height: 100%;
-//     object-fit: contain;
-// `;
 
 // { type, id, link, url, height, width }
 export default function (props) {
@@ -51,7 +38,7 @@ export default function (props) {
         case "link":
             return (
                 <Image
-                    src="https://d1bho1zozx21dx.cloudfront.net/app/uploads/2016/09/19153808/web-link.jpg"
+                    src="https://www.nomadfoods.com/wp-content/uploads/2018/08/placeholder-1-e1533569576673.png"
                     alt=""
                 />
             );

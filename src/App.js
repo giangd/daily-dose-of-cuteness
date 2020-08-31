@@ -4,35 +4,33 @@ import Loader from "./Components/Loader";
 import Media from "./Components/Media";
 import axios from "axios";
 import InfiniteScroll from "react-infinite-scroll-component";
-import Masonry from "react-masonry-css";
 import styled, { createGlobalStyle } from "styled-components";
+
+import Masonry from "react-masonry-css";
+// import "./MasonryStyles.css";
 
 const GlobalStyle = createGlobalStyle`
     * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
+        margin: 0px;
+        padding: 0px;
     }
 
-    body {
-        font-family: sans-serif
-    }
-
-    &.test {
-        background-color: red;
-    }
-
+    /* whole grid */
     &.my-masonry-grid {
         display: -webkit-box; /* Not needed if autoprefixing */
         display: -ms-flexbox; /* Not needed if autoprefixing */
         display: flex;
-        margin-left: -30px; /* gutter size offset */
-        width: auto;
+        width: 75vw;
     }
 
+    /* grid columns */
     &.my-masonry-grid_column {
-        padding-left: 30px; /* gutter size */
         background-clip: padding-box;
+    }
+
+    /* individual items */
+    &.my-masonry-grid_column > * {
+        margin-bottom: -4px;
     }
 `;
 
@@ -54,7 +52,7 @@ class App extends React.Component {
         const parameters = {
             params: {
                 raw_json: 1,
-                limit: 15,
+                limit: 5,
                 after: `${this.state.afterId}`,
             },
         };
@@ -154,8 +152,9 @@ class App extends React.Component {
     };
 
     render() {
+        console.log(`innerWidth: ${window.innerWidth}`);
         return (
-            <>
+            <div className="app">
                 <GlobalStyle />
                 <Heading></Heading>
                 {/* <InfiniteScroll
@@ -165,8 +164,8 @@ class App extends React.Component {
                     loader={<Loader></Loader>}
                     style={{ overflow: "hidden" }}
                 > */}
-                <p className="test">hellow</p>
 
+                {/* </InfiniteScroll> */}
                 <Masonry
                     breakpointCols={3}
                     className="my-masonry-grid"
@@ -178,11 +177,7 @@ class App extends React.Component {
                         );
                     })}
                 </Masonry>
-
-                {/* <MediaObjectsWrapper>
-                    </MediaObjectsWrapper> */}
-                {/* </InfiniteScroll> */}
-            </>
+            </div>
         );
     }
 }

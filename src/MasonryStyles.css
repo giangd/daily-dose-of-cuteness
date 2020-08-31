@@ -1,0 +1,17 @@
+/* whole grid */
+.my-masonry-grid {
+    display: -webkit-box; /* Not needed if autoprefixing */
+    display: -ms-flexbox; /* Not needed if autoprefixing */
+    display: flex;
+    width: auto;
+}
+
+/* grid columns */
+.my-masonry-grid_column {
+    background-clip: padding-box;
+}
+
+/* individual items */
+.my-masonry-grid_column > * {
+    margin-bottom: -4px;
+}
