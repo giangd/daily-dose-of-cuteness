@@ -37,23 +37,25 @@ export default function (props) {
                     autoPlay="autoplay"
                     loop
                     onClick={handleClick}
+                    poster={props.posterUrl}
                 >
                     <source src={props.url}></source>
                 </Video>
             );
         case "link":
-            return (
-                <Image
-                    src="https://www.nomadfoods.com/wp-content/uploads/2018/08/placeholder-1-e1533569576673.png"
-                    alt=""
-                />
-            );
+        // return (
+        //     <Image
+        //         src="https://www.nomadfoods.com/wp-content/uploads/2018/08/placeholder-1-e1533569576673.png"
+        //         alt=""
+        //     />
+        // );
         default:
-            return (
-                <Image
-                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Question_mark_%28black%29.svg/1200px-Question_mark_%28black%29.svg.png"
-                    alt=""
-                />
-            );
+            return "";
+        // return (
+        //     <Image
+        //         src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Question_mark_%28black%29.svg/1200px-Question_mark_%28black%29.svg.png"
+        //         alt=""
+        //     />
+        // );
     }
 }

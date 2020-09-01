@@ -78,6 +78,7 @@ class App extends React.Component {
                     id: undefined,
                     link: undefined,
                     url: undefined,
+                    posterUrl: undefined,
                     height: undefined,
                     width: undefined,
                 };
@@ -101,6 +102,8 @@ class App extends React.Component {
                         // postObject.data.preview.images[0].source.url; // highest resolution, can get lower
                         mediaObject.url =
                             postObject.data.media.reddit_video.fallback_url;
+                        mediaObject.posterUrl =
+                            postObject.data.preview.images[0].source.url; // highest resolution, can get lower
                         mediaObject.height =
                             postObject.data.media.reddit_video.height;
                         mediaObject.width =
