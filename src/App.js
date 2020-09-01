@@ -5,6 +5,7 @@ import Media from "./Components/Media";
 import axios from "axios";
 import InfiniteScroll from "react-infinite-scroll-component";
 import styled, { createGlobalStyle } from "styled-components";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 import Masonry from "react-masonry-css";
 // import "./MasonryStyles.css";
