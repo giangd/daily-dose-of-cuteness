@@ -3,27 +3,124 @@ import styled from "styled-components";
 import Card from "react-bootstrap/Card";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
-import Button from "react-bootstrap/Button";
+// import Button from "react-bootstrap/Button";
+
+import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
+
+import { FiExternalLink } from "react-icons/fi";
+
+/*
+
+import { FaBeer } from 'react-icons/fa';
+class Question extends React.Component {
+  render() {
+    return <h3> Lets go for a <FaBeer />? </h3>
+  }
+}
+
+
+*/
 
 const Image = styled.img`
+    position: relative;
     width: 100%;
     height: auto;
+    z-index: 0;
 `;
 
 const Video = styled.video`
+    position: relative;
     width: 100%;
     height: auto;
+    z-index: 0;
 `;
 
-const StyleWrapper = styled.div`
+const MediaWrapper = styled.div`
     position: relative;
+    /* background: linear-gradient(
+        to right,
+        rgba(255, 0, 0, 0),
+        rgba(255, 0, 0, 1)
+    ); */
+
+    /* width: 100%; */
+    /* height: 100%; */
+
+    /* z-index: 1000; */
 `;
 
-const Overlay = styled.p`
+const Gradient = styled.div`
+    background-image: radial-gradient(
+        circle at 36% 48%,
+        #000000,
+        rgba(11, 39, 65, 0.32) 87%,
+        rgba(0, 0, 0, 0)
+    );
+    width: 100%;
+    height: 100%;
+    min-height: 600px;
+    object-fit: cover;
+    position: relative;
+    z-index: 2000;
+`;
+
+const Overlay = styled.div`
     position: absolute;
-    z-index: 100;
+    z-index: 0;
     bottom: 0;
-    color: red;
+    /* color: red; */
+    color: black;
+`;
+
+const LinkButton = styled.a`
+    position: relative;
+    width: 50px;
+    height: 50px;
+    background-color: Transparent;
+    border: none;
+    overflow: hidden;
+    float: left;
+
+    &:link {
+        color: white;
+    }
+    &:visited {
+        color: white;
+    }
+    &:hover {
+        color: white;
+    }
+    &:focus {
+        color: white;
+    }
+    &:active {
+        color: white;
+    }
+`;
+
+const LinkIcon = styled(FiExternalLink)`
+    position: relative;
+    opacity: 100;
+    height: 100%;
+    width: 100%;
+`;
+
+const HeartButton = styled.button`
+    position: relative;
+    width: 50px;
+    height: 50px;
+    background-color: Transparent;
+    border: none;
+    overflow: hidden;
+    float: right;
+`;
+
+const HeartIcon = styled(AiOutlineHeart)`
+    position: relative;
+    opacity: 100;
+    height: 100%;
+    width: 100%;
+    fill: white;
 `;
 
 export default class extends React.Component {
@@ -55,33 +152,51 @@ export default class extends React.Component {
     };
 
     render() {
+        const overlay = (
+            <Overlay>
+                <LinkButton href={`https://reddit.com${this.state.link}`}>
+                    <LinkIcon />
+                </LinkButton>
+                <HeartButton>
+                    <HeartIcon />
+                </HeartButton>
+            </Overlay>
+        );
         switch (this.state.type) {
             case "image":
             case "gif":
                 // return <Image src={props.url} alt="" />;
                 return (
-                    <StyleWrapper>
-                        <Overlay>test</Overlay>
-
-                        <Card
-                            onMouseEnter={this.handleMouseOver}
-                            onMouseLeave={this.handleMouseLeave}
-                        >
-                            <Card.Img src={this.state.url} alt=""></Card.Img>
-                        </Card>
-                    </StyleWrapper>
+                    <MediaWrapper>
+                        <Gradient>
+                            {overlay}
+                            <Image
+                                onMouseEnter={this.handleMouseOver}
+                                onMouseLeave={this.handleMouseLeave}
+                                src={this.state.url}
+                                alt=""
+                            ></Image>
+                        </Gradient>
+                    </MediaWrapper>
                 );
             case "reddit video":
                 return (
-                    <Video
-                        ref={this.state.videoRef}
-                        autoPlay="autoplay"
-                        loop
-                        onClick={this.handleClick}
-                        poster={this.state.posterUrl}
-                    >
-                        <source src={this.state.url}></source>
-                    </Video>
+                    <MediaWrapper>
+                        <Gradient
+                            styles={{ position: "relative", zIndex: "3000" }}
+                        >
+                            {overlay}
+                            <Video
+                                ref={this.state.videoRef}
+                                autoPlay="autoplay"
+                                loop
+                                onClick={this.handleClick}
+                                poster={this.state.posterUrl}
+                            >
+                                <source src={this.state.url}></source>
+                            </Video>
+                        </Gradient>
+                    </MediaWrapper>
                 );
             case "link":
             // return (
