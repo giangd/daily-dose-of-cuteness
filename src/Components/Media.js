@@ -125,6 +125,7 @@ const LinkIcon = styled(FiExternalLink)`
 const LinkText = styled.p`
     position: relative;
     float: left;
+    margin-top: 6px;
 `;
 
 const HeartButton = styled.button`
@@ -193,7 +194,7 @@ export default class extends React.Component {
             <>
                 <LinkOverlay>
                     <LinkButton href={`https://reddit.com${this.state.link}`}>
-                        <LinkText>{this.state.subreddit}</LinkText>
+                        <LinkText>{this.state.subreddit.substring(2)}</LinkText>
                         <LinkIcon />
                     </LinkButton>
                 </LinkOverlay>
