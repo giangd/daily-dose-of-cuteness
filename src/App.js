@@ -5,7 +5,7 @@ import Media from "./Components/Media";
 import axios from "axios";
 import InfiniteScroll from "react-infinite-scroll-component";
 import styled, { createGlobalStyle } from "styled-components";
-import 'bootstrap/dist/css/bootstrap.min.css';
+import "bootstrap/dist/css/bootstrap.min.css";
 
 import Masonry from "react-masonry-css";
 // import "./MasonryStyles.css";
@@ -37,7 +37,7 @@ const GlobalStyle = createGlobalStyle`
 
     /* individual items */
     &.my-masonry-grid_column > * {
-        margin-bottom: -4px;
+        /* margin-bottom: -6px; */
     }
 `;
 
@@ -77,6 +77,7 @@ class App extends React.Component {
                 let mediaObject = {
                     type: undefined,
                     id: undefined,
+                    subreddit: undefined,
                     link: undefined,
                     url: undefined,
                     posterUrl: undefined,
@@ -91,6 +92,7 @@ class App extends React.Component {
                     case "rich:video": // gif
                         console.log("gif");
                         mediaObject.type = "gif";
+                        mediaObject.subreddit = `${postObject.data.subreddit_name_prefixed}`;
                         mediaObject.url = `${postObject.data.secure_media.oembed.thumbnail_url}`; // compressed gif, can get uncompressed version
                         mediaObject.height = `${postObject.data.secure_media.oembed.thumbnail_height}`;
                         mediaObject.width = `${postObject.data.secure_media.oembed.thumbnail_width}`;
@@ -99,6 +101,8 @@ class App extends React.Component {
                     case "hosted:video": // reddit video
                         console.log("reddit video");
                         mediaObject.type = "reddit video";
+                        mediaObject.subreddit = `${postObject.data.subreddit_name_prefixed}`;
+
                         // mediaObject.url =
                         // postObject.data.preview.images[0].source.url; // highest resolution, can get lower
                         mediaObject.url =
@@ -113,6 +117,8 @@ class App extends React.Component {
                     case "image": // image
                         console.log("image");
                         mediaObject.type = "image";
+                        mediaObject.subreddit = `${postObject.data.subreddit_name_prefixed}`;
+
                         mediaObject.url =
                             postObject.data.preview.images[0].source.url; // highest resolution, can get lower
                         mediaObject.height =
@@ -122,6 +128,8 @@ class App extends React.Component {
                         break;
                     case "link": // image
                         mediaObject.type = "link";
+                        mediaObject.subreddit = `${postObject.data.subreddit_name_prefixed}`;
+
                         mediaObject.url =
                             postObject.data.preview.images[0].source.url; // highest resolution, can get lower
                         console.log(`link: ${mediaObject.url}`);
@@ -133,6 +141,8 @@ class App extends React.Component {
                     default:
                         console.log("unknown");
                         mediaObject.type = "uknown";
+                        mediaObject.subreddit = `${postObject.data.subreddit_name_prefixed}`;
+
                         mediaObject.url =
                             postObject.data.preview.images[0].source.url; // highest resolution, can get lower
                         mediaObject.height =

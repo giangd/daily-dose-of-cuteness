@@ -21,65 +21,80 @@ class Question extends React.Component {
 
 */
 
+// can delete, wanted to see if this could fix the overlay gradient from overflowing
+const MediaWrapper = styled.div`
+    overflow: hide;
+`;
+
 const Image = styled.img`
     position: relative;
     width: 100%;
     height: auto;
-    z-index: 0;
+    z-index: -1;
 `;
 
 const Video = styled.video`
     position: relative;
     width: 100%;
     height: auto;
+    z-index: -1;
+`;
+
+const LinkOverlay = styled.div`
+    position: absolute;
     z-index: 0;
+    bottom: 2px;
+    /* color: red; */
+    color: black;
+    display: none;
 `;
 
-const MediaWrapper = styled.div`
-    position: relative;
-    /* background: linear-gradient(
-        to right,
-        rgba(255, 0, 0, 0),
-        rgba(255, 0, 0, 1)
-    ); */
+const HeartOverlay = styled.div`
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    /* -webkit-transform: translate(-50%, -50%); */
+    transform: translate(-50%, -50%);
 
-    /* width: 100%; */
-    /* height: 100%; */
-
-    /* z-index: 1000; */
-`;
-
-const Gradient = styled.div`
-    background-image: radial-gradient(
-        circle at 36% 48%,
-        #000000,
-        rgba(11, 39, 65, 0.32) 87%,
-        rgba(0, 0, 0, 0)
-    );
-    width: 100%;
-    height: 100%;
-    min-height: 600px;
-    object-fit: cover;
-    position: relative;
-    z-index: 2000;
+    z-index: 0;
+    color: black;
+    display: none;
 `;
 
 const Overlay = styled.div`
-    position: absolute;
-    z-index: 0;
-    bottom: 0;
-    /* color: red; */
-    color: black;
+    position: relative;
+    height: auto;
+    display: flex;
+    justify-content: center;
+
+    overflow: hidden;
+
+    &:hover {
+        background: rgb(0, 0, 0);
+        /* opacity: 0.9; */
+        background: linear-gradient(
+            0deg,
+            rgba(0, 0, 0, 0.15) 0%,
+            rgba(0, 0, 0, 0.15) 100%
+        );
+
+        ${LinkOverlay} {
+            display: block;
+        }
+
+        ${HeartOverlay} {
+            display: block;
+        }
+    }
 `;
 
 const LinkButton = styled.a`
     position: relative;
-    width: 50px;
-    height: 50px;
+    width: auto;
+    height: auto;
     background-color: Transparent;
     border: none;
     overflow: hidden;
-    float: left;
 
     &:link {
         color: white;
@@ -89,6 +104,7 @@ const LinkButton = styled.a`
     }
     &:hover {
         color: white;
+        text-decoration: none;
     }
     &:focus {
         color: white;
@@ -100,9 +116,15 @@ const LinkButton = styled.a`
 
 const LinkIcon = styled(FiExternalLink)`
     position: relative;
-    opacity: 100;
-    height: 100%;
-    width: 100%;
+    height: 30px;
+    width: 30px;
+    margin-left: 10px;
+    float: right;
+`;
+
+const LinkText = styled.p`
+    position: relative;
+    float: left;
 `;
 
 const HeartButton = styled.button`
@@ -111,16 +133,31 @@ const HeartButton = styled.button`
     height: 50px;
     background-color: Transparent;
     border: none;
-    overflow: hidden;
     float: right;
+    &:active {
+        outline: 0;
+    }
+    &:focus {
+        outline: 0;
+    }
+    &:hover {
+        outline: 0;
+    }
 `;
 
 const HeartIcon = styled(AiOutlineHeart)`
     position: relative;
     opacity: 100;
-    height: 100%;
-    width: 100%;
+    width: 80px;
+    height: auto;
+    stroke-width: 1px;
+    stroke: red;
     fill: white;
+`;
+
+const Test = styled.div`
+    background: red;
+    opacity: 0.2;
 `;
 
 export default class extends React.Component {
@@ -152,15 +189,20 @@ export default class extends React.Component {
     };
 
     render() {
-        const overlay = (
-            <Overlay>
-                <LinkButton href={`https://reddit.com${this.state.link}`}>
-                    <LinkIcon />
-                </LinkButton>
-                <HeartButton>
-                    <HeartIcon />
-                </HeartButton>
-            </Overlay>
+        const overlayContent = (
+            <>
+                <LinkOverlay>
+                    <LinkButton href={`https://reddit.com${this.state.link}`}>
+                        <LinkText>{this.state.subreddit}</LinkText>
+                        <LinkIcon />
+                    </LinkButton>
+                </LinkOverlay>
+                <HeartOverlay>
+                    <HeartButton>
+                        <HeartIcon />
+                    </HeartButton>
+                </HeartOverlay>
+            </>
         );
         switch (this.state.type) {
             case "image":
@@ -168,24 +210,23 @@ export default class extends React.Component {
                 // return <Image src={props.url} alt="" />;
                 return (
                     <MediaWrapper>
-                        <Gradient>
-                            {overlay}
+                        <Overlay>
+                            {overlayContent}
                             <Image
                                 onMouseEnter={this.handleMouseOver}
                                 onMouseLeave={this.handleMouseLeave}
                                 src={this.state.url}
                                 alt=""
                             ></Image>
-                        </Gradient>
+                        </Overlay>
                     </MediaWrapper>
                 );
             case "reddit video":
                 return (
                     <MediaWrapper>
-                        <Gradient
-                            styles={{ position: "relative", zIndex: "3000" }}
-                        >
-                            {overlay}
+                        <Overlay>
+                            {/* <Test> */}
+                            {overlayContent}
                             <Video
                                 ref={this.state.videoRef}
                                 autoPlay="autoplay"
@@ -195,7 +236,8 @@ export default class extends React.Component {
                             >
                                 <source src={this.state.url}></source>
                             </Video>
-                        </Gradient>
+                            {/* </Test> */}
+                        </Overlay>
                     </MediaWrapper>
                 );
             case "link":
