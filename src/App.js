@@ -1,15 +1,10 @@
 import React from "react";
-
 import Heading from "./Components/Heading";
-import Loader from "./Components/Loader";
-import Media from "./Components/Media";
 import axios from "axios";
-import InfiniteScroll from "react-infinite-scroll-component";
-import styled, { createGlobalStyle } from "styled-components";
+import { createGlobalStyle } from "styled-components";
 import "bootstrap/dist/css/bootstrap.min.css";
 import cloneDeep from "lodash/cloneDeep";
-import Masonry from "react-masonry-css";
-// import "./MasonryStyles.css";
+import App2 from "./App2";
 
 const dogSubreddits = [
     "dogs_getting_dogs",
@@ -19,6 +14,7 @@ const dogSubreddits = [
     "BeachDogs",
     "beagle",
     "bernesemountaindogs",
+    "blurrypicturesofdogs",
     "BorderCollie",
     "Boxer",
     "Bulldogs",
@@ -48,32 +44,11 @@ const GlobalStyle = createGlobalStyle`
     &.app {
         position: relative;
     }
-
-    /* whole grid */
-    &.my-masonry-grid {
-        display: -webkit-box; /* Not needed if autoprefixing */
-        display: -ms-flexbox; /* Not needed if autoprefixing */
-        display: flex;
-        width: 75vw; /* 100vw * 0.75 - 17px */
-        position: absolute;
-        margin-left: calc((100vw - 75vw) / 2 - 17px)
-    }
-
-    /* grid columns */
-    &.my-masonry-grid_column {
-        background-clip: padding-box;
-    }
-
-    /* individual items */
-    &.my-masonry-grid_column > * {
-        /* margin-bottom: -6px; */
-    }
 `;
 
 class App extends React.Component {
     state = {
         mediaObjects: [], // array of objects
-        afterId: undefined,
         subreddits: {}, // object of subreddit names as keys and subreddit data as object values
     };
 
@@ -319,7 +294,7 @@ class App extends React.Component {
                 subreddits: newSubreddits,
             },
             () => {
-                // console.log(this.state);
+                console.log(this.state.subreddits);
             }
         );
     };
@@ -329,29 +304,11 @@ class App extends React.Component {
             <div className="app">
                 <GlobalStyle />
                 <Heading></Heading>
-
-                <InfiniteScroll
-                    dataLength={this.state.mediaObjects.length}
-                    next={this.fetchBasedOnWeights}
-                    hasMore={true}
-                    style={{ overflow: "hidden" }}
-                ></InfiniteScroll>
-                <Masonry
-                    breakpointCols={3}
-                    className="my-masonry-grid"
-                    columnClassName="my-masonry-grid_column"
-                >
-                    {this.state.mediaObjects.map((mediaObject, index) => {
-                        return (
-                            <Media
-                                {...mediaObject}
-                                handleHeartClick={this.handleHeartClick}
-                                index={index}
-                                key={`${mediaObject.id}`}
-                            />
-                        );
-                    })}
-                </Masonry>
+                <App2
+                    {...this.state}
+                    handleHeartClick={this.handleHeartClick}
+                    fetchBasedOnWeights={this.fetchBasedOnWeights}
+                ></App2>
             </div>
         );
     }
