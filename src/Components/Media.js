@@ -22,9 +22,7 @@ class Question extends React.Component {
 */
 
 // can delete, wanted to see if this could fix the overlay gradient from overflowing
-const MediaWrapper = styled.div`
-    overflow: hide;
-`;
+const MediaWrapper = styled.div``;
 
 const Image = styled.img`
     position: relative;
@@ -153,12 +151,7 @@ const HeartIcon = styled(AiOutlineHeart)`
     height: auto;
     stroke-width: 1px;
     stroke: red;
-    fill: white;
-`;
-
-const Test = styled.div`
-    background: red;
-    opacity: 0.2;
+    fill: ${(props) => (props.clicked === "true" ? "red" : "white")};
 `;
 
 export default class extends React.Component {
@@ -166,46 +159,46 @@ export default class extends React.Component {
         super();
         this.state = {
             ...props,
-            videoRef: React.createRef(),
-            showOverlay: false,
+            // videoRef: React.createRef(),
+            // isHeartClicked: false,
         };
     }
 
-    handleClick = () => {
-        if (this.state.videoRef.current.paused) {
-            this.state.videoRef.current.play();
-        } else {
-            this.state.videoRef.current.pause();
-        }
-    };
+    // handleClick = () => {
+    //     console.log("inside handleClick");
+    //     // if (this.props.videoRef.current.paused) {
+    //     //     this.props.videoRef.current.play();
+    //     // } else {
+    //     //     this.props.videoRef.current.pause();
+    //     // }
+    // };
 
-    handleMouseOver = () => {
-        console.log("mouseOver");
-        this.setState({ showOverlay: true });
-    };
-
-    handleMouseLeave = () => {
-        console.log("mouseLeave");
-        this.setState({ showOverlay: false });
+    handleHeartClick = () => {
+        this.props.handleHeartClick(this.props);
     };
 
     render() {
         const overlayContent = (
             <>
                 <LinkOverlay>
-                    <LinkButton href={`https://reddit.com${this.state.link}`}>
-                        <LinkText>{this.state.subreddit.substring(2)}</LinkText>
+                    <LinkButton
+                        href={`https://reddit.com${this.props.redditLink}`}
+                    >
+                        <LinkText>{this.props.subreddit.substring(2)}</LinkText>
                         <LinkIcon />
                     </LinkButton>
                 </LinkOverlay>
-                <HeartOverlay>
+                <HeartOverlay onClick={this.handleHeartClick}>
                     <HeartButton>
-                        <HeartIcon />
+                        <HeartIcon
+                            clicked={this.props.isHeartClicked.toString()}
+                        />
                     </HeartButton>
                 </HeartOverlay>
             </>
         );
-        switch (this.state.type) {
+
+        switch (this.props.type) {
             case "image":
             case "gif":
                 // return <Image src={props.url} alt="" />;
@@ -213,12 +206,7 @@ export default class extends React.Component {
                     <MediaWrapper>
                         <Overlay>
                             {overlayContent}
-                            <Image
-                                onMouseEnter={this.handleMouseOver}
-                                onMouseLeave={this.handleMouseLeave}
-                                src={this.state.url}
-                                alt=""
-                            ></Image>
+                            <Image src={this.props.url} alt=""></Image>
                         </Overlay>
                     </MediaWrapper>
                 );
@@ -229,18 +217,18 @@ export default class extends React.Component {
                             {/* <Test> */}
                             {overlayContent}
                             <Video
-                                ref={this.state.videoRef}
+                                // ref={this.props.videoRef}
                                 autoPlay="autoplay"
                                 loop
-                                onClick={this.handleClick}
-                                poster={this.state.posterUrl}
+                                poster={this.props.posterUrl}
                             >
-                                <source src={this.state.url}></source>
+                                <source src={this.props.url}></source>
                             </Video>
                             {/* </Test> */}
                         </Overlay>
                     </MediaWrapper>
                 );
+            case "self":
             case "link":
             // return (
             //     <Image
