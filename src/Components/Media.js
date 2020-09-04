@@ -184,7 +184,7 @@ export default class extends React.Component {
                     <LinkButton
                         href={`https://reddit.com${this.props.redditLink}`}
                     >
-                        <LinkText>{this.props.subreddit.substring(2)}</LinkText>
+                        <LinkText>{this.props.subreddit}</LinkText>
                         <LinkIcon />
                     </LinkButton>
                 </LinkOverlay>

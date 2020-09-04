@@ -1,4 +1,5 @@
 import React from "react";
+
 import Heading from "./Components/Heading";
 import Loader from "./Components/Loader";
 import Media from "./Components/Media";
@@ -6,7 +7,7 @@ import axios from "axios";
 import InfiniteScroll from "react-infinite-scroll-component";
 import styled, { createGlobalStyle } from "styled-components";
 import "bootstrap/dist/css/bootstrap.min.css";
-
+import cloneDeep from "lodash/cloneDeep";
 import Masonry from "react-masonry-css";
 // import "./MasonryStyles.css";
 
@@ -102,7 +103,7 @@ class App extends React.Component {
         }
 
         for (const name in subreddits) {
-            subreddits[name].normalizedWeight = subreddits[name].weight /= sum;
+            subreddits[name].normalizedWeight = subreddits[name].weight / sum;
             // console.log(subreddits[name].weight);
         }
         // console.log("normalized:");
@@ -122,7 +123,9 @@ class App extends React.Component {
     */
 
     fetchBasedOnWeights = () => {
-        const maxImages = 20;
+        console.log("fetching based on weights");
+        const maxImages = 25;
+        console.log(this.state.subreddits);
 
         const subredditsToFetchFrom = {};
         for (
@@ -132,13 +135,12 @@ class App extends React.Component {
         ) {
             let random = Math.random();
             let namesIndex = 0;
-            // console.log(this.state.subreddits);
             let names = Object.keys(this.state.subreddits);
             let data;
 
             while (random > 0) {
                 data = this.state.subreddits[names[namesIndex]];
-                random -= data.weight;
+                random -= data.normalizedWeight;
                 namesIndex++;
             }
             namesIndex--;
@@ -158,6 +160,9 @@ class App extends React.Component {
                 };
             }
         }
+
+        console.log("result");
+        console.log(subredditsToFetchFrom);
 
         for (const name in subredditsToFetchFrom) {
             this.fetchImageFromSubreddit(
@@ -239,7 +244,7 @@ class App extends React.Component {
                         case "rich:video": // gif
                             // console.log("gif");
                             mediaObject.type = "gif";
-                            mediaObject.subreddit = `${postObject.data.subreddit_name_prefixed}`;
+                            mediaObject.subreddit = `${postObject.data.subreddit}`;
                             mediaObject.url = `${postObject.data.secure_media.oembed.thumbnail_url}`; // compressed gif, can get uncompressed version
                             mediaObject.height = `${postObject.data.secure_media.oembed.thumbnail_height}`;
                             mediaObject.width = `${postObject.data.secure_media.oembed.thumbnail_width}`;
@@ -248,7 +253,7 @@ class App extends React.Component {
                         case "hosted:video": // reddit video
                             // console.log("reddit video");
                             mediaObject.type = "reddit video";
-                            mediaObject.subreddit = `${postObject.data.subreddit_name_prefixed}`;
+                            mediaObject.subreddit = `${postObject.data.subreddit}`;
 
                             // mediaObject.url =
                             // postObject.data.preview.images[0].source.url; // highest resolution, can get lower
@@ -264,7 +269,7 @@ class App extends React.Component {
                         case "image": // image
                             // console.log("image");
                             mediaObject.type = "image";
-                            mediaObject.subreddit = `${postObject.data.subreddit_name_prefixed}`;
+                            mediaObject.subreddit = `${postObject.data.subreddit}`;
 
                             mediaObject.url =
                                 postObject.data.preview.images[0].source.url; // highest resolution, can get lower
@@ -309,23 +314,38 @@ class App extends React.Component {
     };
 
     handleHeartClick = (mediaObject) => {
-        // // console.log(e);
+        const newMediaObjects = cloneDeep(this.state.mediaObjects);
+        const subredditName = mediaObject.subreddit;
+        let newSubreddits = cloneDeep(this.state.subreddits);
 
-        const oldMediaObjects = this.state.mediaObjects;
-        const newMediaObjects = oldMediaObjects.slice();
+        if (this.state.mediaObjects[mediaObject.index].isHeartClicked) {
+            // should unheart
+            // update isHeartClicked of this.state.mediaObjects
+            newMediaObjects[mediaObject.index].isHeartClicked = false;
 
-        newMediaObjects[mediaObject.index].isHeartClicked = !newMediaObjects[
-            mediaObject.index
-        ].isHeartClicked;
+            // update weighting of this.state.subreddits
+            newSubreddits[subredditName].weight -= 1;
+        } else {
+            // should heart
+            // update isHeartClicked of this.state.mediaObjects
+            newMediaObjects[mediaObject.index].isHeartClicked = true;
 
-        // console.log(`clciked:`);
-        // console.log(mediaObject);
+            // update weighting of this.state.subreddits
+            newSubreddits[subredditName].weight += 1;
+        }
 
-        console.log(this.state.mediaObjects);
+        newSubreddits = this.getNormalizedSubredditData(newSubreddits);
 
-        this.setState({
-            mediaObjects: newMediaObjects,
-        });
+
+        this.setState(
+            {
+                mediaObjects: newMediaObjects,
+                subreddits: newSubreddits,
+            },
+            () => {
+                console.log(this.state);
+            }
+        );
     };
 
     render() {
