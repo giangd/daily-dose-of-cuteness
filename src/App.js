@@ -16,6 +16,27 @@ const dogSubreddits = [
     "AirSwimming",
     "dogswithjobs",
     "slammywhammies",
+    "BeachDogs",
+    "beagle",
+    "bernesemountaindogs",
+    "BorderCollie",
+    "Boxer",
+    "Bulldogs",
+    "corgi",
+    "dogpictures",
+    "dogswearinghats",
+    "germanshepherds",
+    "Greyhounds",
+    "labrador",
+    "lookatmydog",
+    "mutt",
+    "pitbulls",
+    "pug",
+    "rarepuppers",
+    "shiba",
+    "WhatsWrongWithYourDog",
+    "woof_irl",
+    "Zoomies",
 ];
 
 const GlobalStyle = createGlobalStyle`
@@ -58,39 +79,26 @@ class App extends React.Component {
 
     componentDidMount() {
         this.setState({ subreddits: this.getInitialSubredditData() }, () => {
-            // console.log(this.state);t
             this.fetchBasedOnWeights();
         });
     }
 
     getInitialSubredditData = () => {
-        // // console.log(dogSubreddits);
-        const newSubreddits = this.state.subreddits;
+        const newSubreddits = cloneDeep(this.state.subreddits);
+
         for (const name of dogSubreddits) {
             newSubreddits[name] = {
                 weight: 1,
                 normalizedWeight: undefined,
                 afterId: undefined,
             };
-            // // console.log(name);
         }
 
-        // testinng start
-        // newSubreddits["dogs_getting_dogs"].weight = 2;
-        // newSubreddits["AirSwimming"].weight = 1;
-        // newSubreddits["dogswithjobs"].weight = 5;
-
-        // newSubreddits["slammywhammies"].weight = 2;
-        //testing end
-
-        // // console.log(newSubreddits);
         const normalizedInitialData = this.getNormalizedSubredditData(
             newSubreddits
         );
-        // console.log(`type: ${typeof normalized}results normalized:`);
-        console.log(normalizedInitialData);
+        // console.log(normalizedInitialData);
 
-        // this.setState(normalized);
         return normalizedInitialData;
     };
 
@@ -99,33 +107,18 @@ class App extends React.Component {
         let sum = 0;
         for (const name in subreddits) {
             sum += subreddits[name].weight;
-            // console.log(subreddits[name].weight);
         }
 
         for (const name in subreddits) {
             subreddits[name].normalizedWeight = subreddits[name].weight / sum;
-            // console.log(subreddits[name].weight);
         }
-        // console.log("normalized:");
-        // console.log(subreddits);
-
         return subreddits;
     };
 
-    /*
-
-    // increment weight
-
-    this.fetchBasedonWeights()
-
-
-    
-    */
-
     fetchBasedOnWeights = () => {
-        console.log("fetching based on weights");
+        // console.log("fetching based on weights");
         const maxImages = 25;
-        console.log(this.state.subreddits);
+        // console.log(this.state.subreddits);
 
         const subredditsToFetchFrom = {};
         for (
@@ -161,8 +154,8 @@ class App extends React.Component {
             }
         }
 
-        console.log("result");
-        console.log(subredditsToFetchFrom);
+        // console.log("result");
+        // console.log(subredditsToFetchFrom);
 
         for (const name in subredditsToFetchFrom) {
             this.fetchImageFromSubreddit(
@@ -186,18 +179,7 @@ class App extends React.Component {
                 after: `${this.state.subreddits[name].afterId}`,
             },
             crossdomain: true,
-            // headers: {
-            //     "Access-Control-Allow-Origin": "*",
-            //     //     "Access-Control-Allow-Credentials": "true",
-            //     //     "Access-Control-Allow-Methods": "GET,HEAD,OPTIONS,POST,PUT",
-            //     //     "Access-Control-Allow-Headers":
-            //     //         "POST, GET, PUT, DELETE, OPTIONS, HEAD, authorization",
-            //     //     "Access-Control-Allow-Headers":
-            //     //         "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers",
-            // },
         };
-
-        // const newState = {};
 
         axios
             .get(apiCall, config)
@@ -214,10 +196,10 @@ class App extends React.Component {
                 let arrayOfPostObjects;
                 arrayOfPostObjects = [...response.data.data.children];
 
-                // console.log(arrayOfPostObjects);
                 let mediaObjects = [];
                 for (let postObject of arrayOfPostObjects) {
                     let postHint = postObject.data.post_hint;
+
                     // if any of the mediaObjects have this postId, throw error
                     for (const object of this.state.mediaObjects) {
                         if (object.id === `${postObject.data.id}`) {
@@ -286,13 +268,12 @@ class App extends React.Component {
                     mediaObjects.push(mediaObject);
                 }
 
-                // append mediaObjects
-                const newMediaObjects = this.state.mediaObjects
-                    .slice()
-                    .concat(mediaObjects);
+                const newMediaObjects = cloneDeep(
+                    this.state.mediaObjects
+                ).concat(mediaObjects);
 
                 // update subreddit[index].afterId
-                const newSubreddits = Object.assign({}, this.state.subreddits);
+                const newSubreddits = cloneDeep(this.state.subreddits);
                 newSubreddits[name].afterId = afterId;
 
                 this.setState({
@@ -302,9 +283,9 @@ class App extends React.Component {
             })
             .catch((e) => {
                 if (e.message === "duplicate after ids found") {
-                    console.log("duplicate after ids found");
+                    // console.log("duplicate after ids found");
                 } else if (e.message === "duplicate media ids found") {
-                    console.log("duplicate media ids found");
+                    // console.log("duplicate media ids found");
                 } else {
                     console.error("unknown error in fetchImageFromSubreddit:"); // cont here
                     console.log(e);
@@ -318,24 +299,19 @@ class App extends React.Component {
         const subredditName = mediaObject.subreddit;
         let newSubreddits = cloneDeep(this.state.subreddits);
 
+        // update isHeartClicked of this.state.mediaObjects
+        // update weighting of this.state.subreddits
         if (this.state.mediaObjects[mediaObject.index].isHeartClicked) {
             // should unheart
-            // update isHeartClicked of this.state.mediaObjects
             newMediaObjects[mediaObject.index].isHeartClicked = false;
-
-            // update weighting of this.state.subreddits
-            newSubreddits[subredditName].weight -= 1;
+            newSubreddits[subredditName].weight -= 10;
         } else {
             // should heart
-            // update isHeartClicked of this.state.mediaObjects
             newMediaObjects[mediaObject.index].isHeartClicked = true;
-
-            // update weighting of this.state.subreddits
-            newSubreddits[subredditName].weight += 1;
+            newSubreddits[subredditName].weight += 10;
         }
 
         newSubreddits = this.getNormalizedSubredditData(newSubreddits);
-
 
         this.setState(
             {
@@ -343,7 +319,7 @@ class App extends React.Component {
                 subreddits: newSubreddits,
             },
             () => {
-                console.log(this.state);
+                // console.log(this.state);
             }
         );
     };
@@ -358,7 +334,6 @@ class App extends React.Component {
                     dataLength={this.state.mediaObjects.length}
                     next={this.fetchBasedOnWeights}
                     hasMore={true}
-                    git
                     style={{ overflow: "hidden" }}
                 ></InfiniteScroll>
                 <Masonry

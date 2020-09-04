@@ -151,6 +151,9 @@ const HeartIcon = styled(AiOutlineHeart)`
     height: auto;
     stroke-width: 1px;
     stroke: red;
+    margin-left: -10px;
+    margin-top: -10px;
+
     fill: ${(props) => (props.clicked === "true" ? "red" : "white")};
 `;
 
