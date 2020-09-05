@@ -4,7 +4,19 @@ import axios from "axios";
 import { createGlobalStyle } from "styled-components";
 import "bootstrap/dist/css/bootstrap.min.css";
 import cloneDeep from "lodash/cloneDeep";
-import App2 from "./App2";
+import Images from "./App2";
+
+import styled from "styled-components";
+
+import Navbar from "react-bootstrap/Navbar";
+import Nav from "react-bootstrap/Nav";
+import NavDropdown from "react-bootstrap/NavDropdown";
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
+import FormControl from "react-bootstrap/FormControl";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 const dogSubreddits = [
     "dogs_getting_dogs",
@@ -35,6 +47,8 @@ const dogSubreddits = [
     "Zoomies",
 ];
 
+const catSubreddits = ["MEOW_IRL", "cats"];
+
 const GlobalStyle = createGlobalStyle`
     * {
         margin: 0px;
@@ -49,51 +63,77 @@ const GlobalStyle = createGlobalStyle`
 class App extends React.Component {
     state = {
         mediaObjects: [], // array of objects
-        subreddits: {}, // object of subreddit names as keys and subreddit data as object values
+        currentPage: "dogs",
+        categories: {
+            dogs: {},
+            cats: {},
+        },
+    };
+
+    handleClick = () => {
+        console.log("clicked");
+        this.setState({ mediaObjects: [], currentPage: "cats" }, () => {
+            this.fetchBasedOnWeights();
+        });
     };
 
     componentDidMount() {
-        this.setState({ subreddits: this.getInitialSubredditData() }, () => {
+        this.setState({ categories: this.getInitialSubredditData() }, () => {
             this.fetchBasedOnWeights();
         });
     }
 
     getInitialSubredditData = () => {
-        const newSubreddits = cloneDeep(this.state.subreddits);
+        const newCategories = cloneDeep(this.state.categories);
 
         for (const name of dogSubreddits) {
-            newSubreddits[name] = {
+            newCategories.dogs[name] = {
                 weight: 1,
                 normalizedWeight: undefined,
                 afterId: undefined,
             };
         }
 
+        for (const name of catSubreddits) {
+            newCategories.cats[name] = {
+                weight: 1,
+                normalizedWeight: undefined,
+                afterId: undefined,
+            };
+        }
+
+        // console.log(newCategories);
+
         const normalizedInitialData = this.getNormalizedSubredditData(
-            newSubreddits
+            newCategories
         );
         // console.log(normalizedInitialData);
 
         return normalizedInitialData;
     };
 
-    getNormalizedSubredditData = (subreddits) => {
-        // let length = subreddits.length;
-        let sum = 0;
-        for (const name in subreddits) {
-            sum += subreddits[name].weight;
+    getNormalizedSubredditData = (categories) => {
+        for (const categoryName in categories) {
+            let sum = 0;
+            // console.log(categoryName);
+            for (const subredditName in categories[categoryName]) {
+                const subredditObj = categories[categoryName][subredditName];
+                sum += subredditObj.weight;
+            }
+
+            for (const subredditName in categories[categoryName]) {
+                const subredditObj = categories[categoryName][subredditName];
+                subredditObj.normalizedWeight = subredditObj.weight / sum;
+                // console.log(subredditObj.normalizedWeight);
+            }
         }
 
-        for (const name in subreddits) {
-            subreddits[name].normalizedWeight = subreddits[name].weight / sum;
-        }
-        return subreddits;
+        return categories;
     };
 
     fetchBasedOnWeights = () => {
         // console.log("fetching based on weights");
         const maxImages = 25;
-        // console.log(this.state.subreddits);
 
         const subredditsToFetchFrom = {};
         for (
@@ -103,11 +143,17 @@ class App extends React.Component {
         ) {
             let random = Math.random();
             let namesIndex = 0;
-            let names = Object.keys(this.state.subreddits);
+            let names = Object.keys(
+                this.state.categories[this.state.currentPage]
+            );
             let data;
 
+            // console.log(names);
+
             while (random > 0) {
-                data = this.state.subreddits[names[namesIndex]];
+                data = this.state.categories[this.state.currentPage][
+                    names[namesIndex]
+                ];
                 random -= data.normalizedWeight;
                 namesIndex++;
             }
@@ -145,13 +191,14 @@ class App extends React.Component {
         // console.log("fetching...");
 
         const apiCall = `https://www.reddit.com/r/${name}/hot.json`;
-        // const apiCall = `https://www.reddit.com/r/${this.state.subreddits[index].name}/top.json`; // todo: remove this after testing
         const config = {
             params: {
                 // t: "all",
                 raw_json: 1,
                 limit: numImages - 1,
-                after: `${this.state.subreddits[name].afterId}`,
+                after: `${
+                    this.state.categories[this.state.currentPage][name].afterId
+                }`,
             },
             crossdomain: true,
         };
@@ -162,8 +209,13 @@ class App extends React.Component {
                 let afterId = response.data.data.after;
 
                 // if any of the subreddits have this afterId, throw new Error("Error");
-                for (const name in this.state.subreddits) {
-                    if (this.state.subreddits[name].afterId === afterId) {
+                for (const name in this.state.categories[
+                    this.state.currentPage
+                ]) {
+                    if (
+                        this.state.categories[this.state.currentPage][name]
+                            .afterId === afterId
+                    ) {
                         throw new Error("duplicate after ids found");
                     }
                 }
@@ -248,14 +300,18 @@ class App extends React.Component {
                 ).concat(mediaObjects);
 
                 // update subreddit[index].afterId
-                const newSubreddits = cloneDeep(this.state.subreddits);
-                newSubreddits[name].afterId = afterId;
+                const newCategories = cloneDeep(this.state.categories);
+                console.log("newCategories:");
+                console.log(newCategories);
+
+                newCategories[this.state.currentPage][name].afterId = afterId;
 
                 this.setState({
                     mediaObjects: newMediaObjects,
-                    subreddits: newSubreddits,
+                    categories: newCategories,
                 });
             })
+
             .catch((e) => {
                 if (e.message === "duplicate after ids found") {
                     // console.log("duplicate after ids found");
@@ -272,43 +328,100 @@ class App extends React.Component {
     handleHeartClick = (mediaObject) => {
         const newMediaObjects = cloneDeep(this.state.mediaObjects);
         const subredditName = mediaObject.subreddit;
-        let newSubreddits = cloneDeep(this.state.subreddits);
+        let newCategories = cloneDeep(this.state.categories);
 
         // update isHeartClicked of this.state.mediaObjects
-        // update weighting of this.state.subreddits
+        // update weighting of this.state.categories
         if (this.state.mediaObjects[mediaObject.index].isHeartClicked) {
             // should unheart
             newMediaObjects[mediaObject.index].isHeartClicked = false;
-            newSubreddits[subredditName].weight -= 10;
+            newCategories[this.state.currentPage][subredditName].weight -= 10;
         } else {
             // should heart
             newMediaObjects[mediaObject.index].isHeartClicked = true;
-            newSubreddits[subredditName].weight += 10;
+            newCategories[this.state.currentPage][subredditName].weight += 10;
         }
 
-        newSubreddits = this.getNormalizedSubredditData(newSubreddits);
+        newCategories = this.getNormalizedSubredditData(newCategories);
 
         this.setState(
             {
                 mediaObjects: newMediaObjects,
-                subreddits: newSubreddits,
+                categories: newCategories,
             },
             () => {
-                console.log(this.state.subreddits);
+                console.log(this.state);
             }
         );
     };
 
     render() {
+        const renderNavBar = () => {
+            return null;
+        };
+        const renderCategoryPage = () => {
+            if (this.state.currentPage !== "hearted" || "homePage") {
+                return (
+                    <>
+                        <Row>
+                            <Col>
+                                <Heading></Heading>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                <Images
+                                    {...this.state}
+                                    handleHeartClick={this.handleHeartClick}
+                                    fetchBasedOnWeights={
+                                        this.fetchBasedOnWeights
+                                    }
+                                ></Images>
+                            </Col>
+                        </Row>
+                        {/* <button onClick={this.handleClick}>
+                            Change categories
+                        </button> */}
+                    </>
+                );
+            }
+        };
+
+        const renderHomePage = () => {
+            if (this.state.currentPage === "homePage") {
+                return <div>homePage</div>;
+            }
+        };
+
         return (
             <div className="app">
                 <GlobalStyle />
-                <Heading></Heading>
-                <App2
-                    {...this.state}
-                    handleHeartClick={this.handleHeartClick}
-                    fetchBasedOnWeights={this.fetchBasedOnWeights}
-                ></App2>
+                <div
+                    className="navBar"
+                    style={{
+                        position: "fixed",
+                        backgroundColor: "red",
+                        height: "100vh",
+                        width: "100px",
+                        left: "0px",
+                        // float: "left",
+                    }}
+                ></div>
+                <div style={{ marginLeft: "100px" }}>
+                    <Container
+                        className="fluid .mx-0"
+                        // style={{ float: "right" }}
+                    >
+                        <Row>
+                            {/* fixed column here */}
+                            <Col>
+                                {renderCategoryPage()}
+                                {renderHomePage()}
+                            </Col>
+                            {/* fixed column here */}
+                        </Row>
+                    </Container>
+                </div>
             </div>
         );
     }
