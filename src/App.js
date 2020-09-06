@@ -4,7 +4,7 @@ import axios from "axios";
 import { createGlobalStyle } from "styled-components";
 import "bootstrap/dist/css/bootstrap.min.css";
 import cloneDeep from "lodash/cloneDeep";
-import Images from "./App2";
+import MasonryImages from "./MasonryImages";
 import { FiExternalLink } from "react-icons/fi";
 
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
@@ -19,13 +19,16 @@ import FormControl from "react-bootstrap/FormControl";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import { BsHeartFill, BsHouseDoorFill } from "react-icons/bs";
 
-const HeartButton = styled.button`
+const NavButton = styled.button`
     position: relative;
     width: 50px;
     height: 50px;
     background-color: Transparent;
     border: none;
+    margin-left: auto;
+    margin-right: auto;
     &:active {
         outline: 0;
     }
@@ -37,17 +40,30 @@ const HeartButton = styled.button`
     }
 `;
 
-const HeartIcon = styled(AiOutlineHeart)`
-    position: relative;
-    opacity: 100;
-    width: 80px;
+const HomeIcon = styled(BsHouseDoorFill)`
+    width: 40px;
     height: auto;
-    stroke-width: 1px;
+    stroke: grey;
+    fill: grey;
+`;
+const HomeHoveredIcon = styled(BsHouseDoorFill)`
+    width: 40px;
+    height: auto;
     stroke: red;
-    margin-left: -10px;
-    margin-top: -10px;
+    fill: red;
+`;
 
-    fill: ${(props) => (props.hovered === "true" ? "red" : "white")};
+const HeartIcon = styled(BsHeartFill)`
+    width: 40px;
+    height: auto;
+    stroke: grey;
+    fill: grey;
+`;
+const HeartHoveredIcon = styled(BsHeartFill)`
+    width: 40px;
+    height: auto;
+    stroke: red;
+    fill: red;
 `;
 
 const dogSubreddits = [
@@ -86,7 +102,6 @@ const GlobalStyle = createGlobalStyle`
         margin: 0px;
         padding: 0px;
     }
-
     &.app {
         position: relative;
     }
@@ -100,35 +115,60 @@ class App extends React.Component {
             dogs: {},
             cats: {},
         },
-        isHeartNavHovered: false,
+        isHeartHovered: false,
     };
-    handleMouseEnter = (e) => {
+    handleMouseEnterHome = (e) => {
         console.log("enter w");
         console.log(e.target);
-        console.log(e.target.getAttribute("data-type"));
 
         this.setState(
             {
-                [e.target.getAttribute("data-type")]: !this.state[
-                    e.target.getAttribute("data-type")
-                ],
+                isHomeHovered: true,
             },
-            console.log(this.state)
+            () => {
+                console.log(this.state);
+            }
         );
     };
 
-     handleMouseLeave = (e) => {
-        console.log("enter w");
+    handleMouseLeaveHome = (e) => {
+        console.log("exit w");
         console.log(e.target);
-        console.log(e.target.getAttribute("data-type"));
 
         this.setState(
             {
-                [e.target.getAttribute("data-type")]: !this.state[
-                    e.target.getAttribute("data-type")
-                ],
+                isHomeHovered: false,
             },
-            console.log(this.state)
+            () => {
+                console.log(this.state);
+            }
+        );
+    };
+    handleMouseEnterHeart = (e) => {
+        console.log("enter w");
+        console.log(e.target);
+
+        this.setState(
+            {
+                isHeartHovered: true,
+            },
+            () => {
+                console.log(this.state);
+            }
+        );
+    };
+
+    handleMouseLeaveHeart = (e) => {
+        console.log("exit w");
+        console.log(e.target);
+
+        this.setState(
+            {
+                isHeartHovered: false,
+            },
+            () => {
+                console.log(this.state);
+            }
         );
     };
     handleCategoryClick = (e) => {
@@ -449,13 +489,13 @@ class App extends React.Component {
                         </Row>
                         <Row>
                             <Col>
-                                <Images
+                                <MasonryImages
                                     {...this.state}
                                     handleHeartClick={this.handleHeartClick}
                                     fetchBasedOnWeights={
                                         this.fetchBasedOnWeights
                                     }
-                                ></Images>
+                                ></MasonryImages>
                             </Col>
                         </Row>
                     </>
@@ -519,16 +559,33 @@ class App extends React.Component {
                             className="block-center"
                             style={{ height: "100vh" }}
                         >
-                            <Col className="">
-                                <HeartButton>
-                                    <HeartIcon
-                                        onMouseEnter={this.handleMouseEnter}
-                                        onMouseLeave={this.handleMouseLeave}
-                                        data-type="isHeartNavHovered"
-                                        hovered={this.state.isHeartNavHovered.toString()}
-                                    />
-                                </HeartButton>
-                                <Button className="">Hearted</Button>
+                            {/* className="d-flex justify-content-center" */}
+                            <Col
+                                style={{
+                                    textAlign: "center",
+                                    border: "1px solid",
+                                }}
+                            >
+                                <NavButton
+                                    onMouseEnter={this.handleMouseEnterHome}
+                                    onMouseLeave={this.handleMouseLeaveHome}
+                                >
+                                    {this.state.isHomeHovered ? (
+                                        <HomeHoveredIcon />
+                                    ) : (
+                                        <HomeIcon />
+                                    )}
+                                </NavButton>
+                                <NavButton
+                                    onMouseEnter={this.handleMouseEnterHeart}
+                                    onMouseLeave={this.handleMouseLeaveHeart}
+                                >
+                                    {this.state.isHeartHovered ? (
+                                        <HeartHoveredIcon />
+                                    ) : (
+                                        <HeartIcon />
+                                    )}
+                                </NavButton>
                             </Col>
                         </Row>
                     </Container>

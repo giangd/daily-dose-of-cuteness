@@ -22,6 +22,7 @@ class Question extends React.Component {
 */
 
 // can delete, wanted to see if this could fix the overlay gradient from overflowing
+// maybe don't delete, the overflow issue was fixed somewhere
 const MediaWrapper = styled.div``;
 
 const Image = styled.img`
