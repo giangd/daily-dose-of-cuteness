@@ -167,6 +167,15 @@ export default class extends React.Component {
         };
     }
 
+    // handleClick = () => {
+    //     console.log("inside handleClick");
+    //     // if (this.props.videoRef.current.paused) {
+    //     //     this.props.videoRef.current.play();
+    //     // } else {
+    //     //     this.props.videoRef.current.pause();
+    //     // }
+    // };
+
     handleHeartClick = () => {
         this.props.handleHeartClick(this.props);
     };
@@ -226,4 +235,3 @@ export default class extends React.Component {
         }
     }
 }
-

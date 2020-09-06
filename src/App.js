@@ -26,7 +26,6 @@ const HeartButton = styled.button`
     height: 50px;
     background-color: Transparent;
     border: none;
-    float: right;
     &:active {
         outline: 0;
     }
@@ -48,7 +47,7 @@ const HeartIcon = styled(AiOutlineHeart)`
     margin-left: -10px;
     margin-top: -10px;
 
-    fill: ${(props) => (props.clicked === "true" ? "red" : "white")};
+    fill: ${(props) => (props.hovered === "true" ? "red" : "white")};
 `;
 
 const dogSubreddits = [
@@ -101,6 +100,36 @@ class App extends React.Component {
             dogs: {},
             cats: {},
         },
+        isHeartNavHovered: false,
+    };
+    handleMouseEnter = (e) => {
+        console.log("enter w");
+        console.log(e.target);
+        console.log(e.target.getAttribute("data-type"));
+
+        this.setState(
+            {
+                [e.target.getAttribute("data-type")]: !this.state[
+                    e.target.getAttribute("data-type")
+                ],
+            },
+            console.log(this.state)
+        );
+    };
+
+     handleMouseLeave = (e) => {
+        console.log("enter w");
+        console.log(e.target);
+        console.log(e.target.getAttribute("data-type"));
+
+        this.setState(
+            {
+                [e.target.getAttribute("data-type")]: !this.state[
+                    e.target.getAttribute("data-type")
+                ],
+            },
+            console.log(this.state)
+        );
     };
     handleCategoryClick = (e) => {
         console.log(e.target.value);
@@ -479,11 +508,10 @@ class App extends React.Component {
                     className="navBar"
                     style={{
                         position: "fixed",
-                        backgroundColor: "red",
+                        backgroundColor: "darkBlue",
                         height: "100vh",
                         width: "100px",
                         left: "0px",
-                        // float: "left",
                     }}
                 >
                     <Container>
@@ -493,7 +521,11 @@ class App extends React.Component {
                         >
                             <Col className="">
                                 <HeartButton>
-                                    <HeartIcon clicked={"true"}
+                                    <HeartIcon
+                                        onMouseEnter={this.handleMouseEnter}
+                                        onMouseLeave={this.handleMouseLeave}
+                                        data-type="isHeartNavHovered"
+                                        hovered={this.state.isHeartNavHovered.toString()}
                                     />
                                 </HeartButton>
                                 <Button className="">Hearted</Button>
