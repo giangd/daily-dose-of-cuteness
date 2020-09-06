@@ -10,7 +10,6 @@ import { FiExternalLink } from "react-icons/fi";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import styled from "styled-components";
 
-import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import Form from "react-bootstrap/Form";
@@ -20,6 +19,8 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { BsHeartFill, BsHouseDoorFill } from "react-icons/bs";
+
+import NavBar from "./Components/NavBar";
 
 const NavButton = styled.button`
     position: relative;
@@ -108,69 +109,63 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 class App extends React.Component {
-    state = {
-        mediaObjects: [], // array of objects
-        currentPage: "homePage",
-        categories: {
-            dogs: {},
-            cats: {},
-        },
-        isHeartHovered: false,
-    };
-    handleMouseEnterHome = (e) => {
-        console.log("enter w");
-        console.log(e.target);
-
-        this.setState(
-            {
-                isHomeHovered: true,
+    constructor(props) {
+        super(props);
+        this.state = {
+            mediaObjects: [], // array of objects
+            currentPage: "homePage",
+            categories: {
+                dogs: {},
+                cats: {},
             },
-            () => {
-                console.log(this.state);
-            }
-        );
-    };
-
-    handleMouseLeaveHome = (e) => {
-        console.log("exit w");
-        console.log(e.target);
-
-        this.setState(
-            {
+            navData: {
+                isHeartHovered: false,
                 isHomeHovered: false,
+                handleMouseEnterHome: this.handleMouseEnterHome,
+                handleMouseLeaveHome: this.handleMouseLeaveHome,
+                handleMouseEnterHeart: this.handleMouseEnterHeart,
+                handleMouseLeaveHeart: this.handleMouseLeaveHeart,
             },
-            () => {
-                console.log(this.state);
-            }
-        );
+        };
+    }
+
+    handleMouseEnterHome = (e) => {
+        this.setState((prevState) => {
+            const newNavData = cloneDeep(prevState.navData);
+            newNavData.isHomeHovered = true;
+            return {
+                navData: newNavData,
+            };
+        });
+    };
+    handleMouseLeaveHome = (e) => {
+        this.setState((prevState) => {
+            const newNavData = cloneDeep(prevState.navData);
+            newNavData.isHomeHovered = false;
+            return {
+                navData: newNavData,
+            };
+        });
     };
     handleMouseEnterHeart = (e) => {
-        console.log("enter w");
-        console.log(e.target);
-
-        this.setState(
-            {
-                isHeartHovered: true,
-            },
-            () => {
-                console.log(this.state);
-            }
-        );
+        this.setState((prevState) => {
+            const newNavData = cloneDeep(prevState.navData);
+            newNavData.isHeartHovered = true;
+            return {
+                navData: newNavData,
+            };
+        });
     };
-
     handleMouseLeaveHeart = (e) => {
-        console.log("exit w");
-        console.log(e.target);
-
-        this.setState(
-            {
-                isHeartHovered: false,
-            },
-            () => {
-                console.log(this.state);
-            }
-        );
+        this.setState((prevState) => {
+            const newNavData = cloneDeep(prevState.navData);
+            newNavData.isHeartHovered = false;
+            return {
+                navData: newNavData,
+            };
+        });
     };
+
     handleCategoryClick = (e) => {
         console.log(e.target.value);
         this.setState(
@@ -544,52 +539,7 @@ class App extends React.Component {
         return (
             <div className="app">
                 <GlobalStyle />
-                <div
-                    className="navBar"
-                    style={{
-                        position: "fixed",
-                        backgroundColor: "darkBlue",
-                        height: "100vh",
-                        width: "100px",
-                        left: "0px",
-                    }}
-                >
-                    <Container>
-                        <Row
-                            className="block-center"
-                            style={{ height: "100vh" }}
-                        >
-                            {/* className="d-flex justify-content-center" */}
-                            <Col
-                                style={{
-                                    textAlign: "center",
-                                    border: "1px solid",
-                                }}
-                            >
-                                <NavButton
-                                    onMouseEnter={this.handleMouseEnterHome}
-                                    onMouseLeave={this.handleMouseLeaveHome}
-                                >
-                                    {this.state.isHomeHovered ? (
-                                        <HomeHoveredIcon />
-                                    ) : (
-                                        <HomeIcon />
-                                    )}
-                                </NavButton>
-                                <NavButton
-                                    onMouseEnter={this.handleMouseEnterHeart}
-                                    onMouseLeave={this.handleMouseLeaveHeart}
-                                >
-                                    {this.state.isHeartHovered ? (
-                                        <HeartHoveredIcon />
-                                    ) : (
-                                        <HeartIcon />
-                                    )}
-                                </NavButton>
-                            </Col>
-                        </Row>
-                    </Container>
-                </div>
+                <NavBar {...this.state.navData}></NavBar>
                 <div style={{ marginLeft: "100px" }}>
                     <Container
                         className="fluid .mx-0"
