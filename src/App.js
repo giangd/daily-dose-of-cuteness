@@ -5,7 +5,9 @@ import { createGlobalStyle } from "styled-components";
 import "bootstrap/dist/css/bootstrap.min.css";
 import cloneDeep from "lodash/cloneDeep";
 import Images from "./App2";
+import { FiExternalLink } from "react-icons/fi";
 
+import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import styled from "styled-components";
 
 import Navbar from "react-bootstrap/Navbar";
@@ -17,6 +19,37 @@ import FormControl from "react-bootstrap/FormControl";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+
+const HeartButton = styled.button`
+    position: relative;
+    width: 50px;
+    height: 50px;
+    background-color: Transparent;
+    border: none;
+    float: right;
+    &:active {
+        outline: 0;
+    }
+    &:focus {
+        outline: 0;
+    }
+    &:hover {
+        outline: 0;
+    }
+`;
+
+const HeartIcon = styled(AiOutlineHeart)`
+    position: relative;
+    opacity: 100;
+    width: 80px;
+    height: auto;
+    stroke-width: 1px;
+    stroke: red;
+    margin-left: -10px;
+    margin-top: -10px;
+
+    fill: ${(props) => (props.clicked === "true" ? "red" : "white")};
+`;
 
 const dogSubreddits = [
     "dogs_getting_dogs",
@@ -63,11 +96,25 @@ const GlobalStyle = createGlobalStyle`
 class App extends React.Component {
     state = {
         mediaObjects: [], // array of objects
-        currentPage: "dogs",
+        currentPage: "homePage",
         categories: {
             dogs: {},
             cats: {},
         },
+    };
+    handleCategoryClick = (e) => {
+        console.log(e.target.value);
+        this.setState(
+            {
+                categories: this.getInitialSubredditData(),
+                mediaObjects: [],
+                currentPage: `${e.target.value}`,
+            },
+            () => {
+                console.log(this.state);
+                this.fetchBasedOnWeights();
+            }
+        );
     };
 
     handleClick = () => {
@@ -78,9 +125,9 @@ class App extends React.Component {
     };
 
     componentDidMount() {
-        this.setState({ categories: this.getInitialSubredditData() }, () => {
-            this.fetchBasedOnWeights();
-        });
+        // this.setState({ categories: this.getInitialSubredditData() }, () => {
+        //     this.fetchBasedOnWeights();
+        // });
     }
 
     getInitialSubredditData = () => {
@@ -360,7 +407,10 @@ class App extends React.Component {
             return null;
         };
         const renderCategoryPage = () => {
-            if (this.state.currentPage !== "hearted" || "homePage") {
+            if (
+                this.state.currentPage !== "hearted" &&
+                this.state.currentPage !== "homePage"
+            ) {
                 return (
                     <>
                         <Row>
@@ -379,9 +429,6 @@ class App extends React.Component {
                                 ></Images>
                             </Col>
                         </Row>
-                        {/* <button onClick={this.handleClick}>
-                            Change categories
-                        </button> */}
                     </>
                 );
             }
@@ -389,7 +436,39 @@ class App extends React.Component {
 
         const renderHomePage = () => {
             if (this.state.currentPage === "homePage") {
-                return <div>homePage</div>;
+                return (
+                    <>
+                        <h1 className="text-center">Daily Dose of Cuteness</h1>
+                        <Row>
+                            <Col className="text-center">
+                                <Button
+                                    value="dogs"
+                                    onClick={this.handleCategoryClick}
+                                >
+                                    Dogs
+                                </Button>
+                                <Button
+                                    value="cats"
+                                    onClick={this.handleCategoryClick}
+                                >
+                                    Cats
+                                </Button>
+                                <Button
+                                    value="dogs"
+                                    onClick={this.handleCategoryClick}
+                                >
+                                    Dogs
+                                </Button>
+                                <Button
+                                    value="dogs"
+                                    onClick={this.handleCategoryClick}
+                                >
+                                    Dogs
+                                </Button>
+                            </Col>
+                        </Row>
+                    </>
+                );
             }
         };
 
@@ -406,7 +485,22 @@ class App extends React.Component {
                         left: "0px",
                         // float: "left",
                     }}
-                ></div>
+                >
+                    <Container>
+                        <Row
+                            className="block-center"
+                            style={{ height: "100vh" }}
+                        >
+                            <Col className="">
+                                <HeartButton>
+                                    <HeartIcon clicked={"true"}
+                                    />
+                                </HeartButton>
+                                <Button className="">Hearted</Button>
+                            </Col>
+                        </Row>
+                    </Container>
+                </div>
                 <div style={{ marginLeft: "100px" }}>
                     <Container
                         className="fluid .mx-0"

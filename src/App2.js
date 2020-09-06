@@ -12,9 +12,6 @@ const MasonryStyles = styled.div`
         display: -ms-flexbox; /* Not needed if autoprefixing */
         display: flex;
         width: 100%;
-        /* width: 75vw; 100vw * 0.75 - 17px */
-        /* position: absolute; */
-        /* margin-left: calc((100vw - 75vw) / 2 - 17px); */
         margin: 0 auto;
     }
 

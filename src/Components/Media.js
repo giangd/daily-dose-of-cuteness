@@ -167,15 +167,6 @@ export default class extends React.Component {
         };
     }
 
-    // handleClick = () => {
-    //     console.log("inside handleClick");
-    //     // if (this.props.videoRef.current.paused) {
-    //     //     this.props.videoRef.current.play();
-    //     // } else {
-    //     //     this.props.videoRef.current.pause();
-    //     // }
-    // };
-
     handleHeartClick = () => {
         this.props.handleHeartClick(this.props);
     };
@@ -204,7 +195,6 @@ export default class extends React.Component {
         switch (this.props.type) {
             case "image":
             case "gif":
-                // return <Image src={props.url} alt="" />;
                 return (
                     <MediaWrapper>
                         <Overlay>
@@ -217,7 +207,6 @@ export default class extends React.Component {
                 return (
                     <MediaWrapper>
                         <Overlay>
-                            {/* <Test> */}
                             {overlayContent}
                             <Video
                                 // ref={this.props.videoRef}
@@ -227,105 +216,14 @@ export default class extends React.Component {
                             >
                                 <source src={this.props.url}></source>
                             </Video>
-                            {/* </Test> */}
                         </Overlay>
                     </MediaWrapper>
                 );
             case "self":
             case "link":
-            // return (
-            //     <Image
-            //         src="https://www.nomadfoods.com/wp-content/uploads/2018/08/placeholder-1-e1533569576673.png"
-            //         alt=""
-            //     />
-            // );
             default:
                 return "";
-            // return (
-            //     <Image
-            //         src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Question_mark_%28black%29.svg/1200px-Question_mark_%28black%29.svg.png"
-            //         alt=""
-            //     />
-            // );
         }
     }
 }
 
-// { type, id, link, url, height, width }
-// export default function (props) {
-//     let videoRef = React.createRef();
-
-//     function handleClick() {
-//         // console.log("clicked");
-//         // console.log(videoRef.current.paused);
-//         if (videoRef.current.paused) {
-//             videoRef.current.play();
-//         } else {
-//             videoRef.current.pause();
-//         }
-//     }
-
-//     function handleMouseOver() {
-//         console.log("mouseOver");
-//     }
-
-//     function handleMouseLeave() {
-//         console.log("mouseLeave");
-//     }
-
-//     switch (props.type) {
-//         case "image":
-//         case "gif":
-//             // return <Image src={props.url} alt="" />;
-
-//             return (
-//                 <Card
-//                     onMouseEnter={handleMouseOver}
-//                     onMouseLeave={handleMouseLeave}
-//                 >
-//                     <Card.Img src={props.url} alt=""></Card.Img>
-//                     <Card.ImgOverlay>
-//                         <Card.Footer styles={{ position: "relative" }}>
-//                             <Card.Link
-//                                 styles={{
-//                                     position: "absolute",
-//                                     top: "300px",
-//                                 }}
-//                                 href="#"
-//                             >
-//                                 Card Link
-//                             </Card.Link>
-//                             <Card.Link href="#">Another Link</Card.Link>
-//                         </Card.Footer>
-//                     </Card.ImgOverlay>
-//                 </Card>
-//             );
-//         case "reddit video":
-//             return (
-//                 <Video
-//                     ref={videoRef}
-//                     autoPlay="autoplay"
-//                     loop
-//                     onClick={handleClick}
-//                     poster={props.posterUrl}
-//                 >
-//                     <source src={props.url}></source>
-//                 </Video>
-//             );
-//         case "link":
-//         // return (
-//         //     <Image
-//         //         src="https://www.nomadfoods.com/wp-content/uploads/2018/08/placeholder-1-e1533569576673.png"
-//         //         alt=""
-//         //     />
-//         // );
-//         default:
-//             return "";
-//         // return (
-//         //     <Image
-//         //         src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Question_mark_%28black%29.svg/1200px-Question_mark_%28black%29.svg.png"
-//         //         alt=""
-//         //     />
-//         // );
-//     }
-// }
