@@ -64,7 +64,7 @@ const HeartHoveredIcon = styled(BsHeartFill)`
 `;
 
 export default function (props) {
-    console.log(props);
+    // console.log(props);
     return (
         <div
             className="navBar"
@@ -87,6 +87,7 @@ export default function (props) {
                         <NavButton
                             onMouseEnter={props.handleMouseEnterHome}
                             onMouseLeave={props.handleMouseLeaveHome}
+                            onClick={props.handleClickHome}
                         >
                             {props.isHomeHovered ? (
                                 <HomeHoveredIcon />
@@ -97,6 +98,7 @@ export default function (props) {
                         <NavButton
                             onMouseEnter={props.handleMouseEnterHeart}
                             onMouseLeave={props.handleMouseLeaveHeart}
+                            onClick={props.handleClickHeart}
                         >
                             {props.isHeartHovered ? (
                                 <HeartHoveredIcon />

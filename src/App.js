@@ -22,51 +22,6 @@ import { BsHeartFill, BsHouseDoorFill } from "react-icons/bs";
 
 import NavBar from "./Components/NavBar";
 
-const NavButton = styled.button`
-    position: relative;
-    width: 50px;
-    height: 50px;
-    background-color: Transparent;
-    border: none;
-    margin-left: auto;
-    margin-right: auto;
-    &:active {
-        outline: 0;
-    }
-    &:focus {
-        outline: 0;
-    }
-    &:hover {
-        outline: 0;
-    }
-`;
-
-const HomeIcon = styled(BsHouseDoorFill)`
-    width: 40px;
-    height: auto;
-    stroke: grey;
-    fill: grey;
-`;
-const HomeHoveredIcon = styled(BsHouseDoorFill)`
-    width: 40px;
-    height: auto;
-    stroke: red;
-    fill: red;
-`;
-
-const HeartIcon = styled(BsHeartFill)`
-    width: 40px;
-    height: auto;
-    stroke: grey;
-    fill: grey;
-`;
-const HeartHoveredIcon = styled(BsHeartFill)`
-    width: 40px;
-    height: auto;
-    stroke: red;
-    fill: red;
-`;
-
 const dogSubreddits = [
     "dogs_getting_dogs",
     "AirSwimming",
@@ -118,6 +73,7 @@ class App extends React.Component {
                 dogs: {},
                 cats: {},
             },
+            heartedMedia: [],
             navData: {
                 isHeartHovered: false,
                 isHomeHovered: false,
@@ -125,10 +81,19 @@ class App extends React.Component {
                 handleMouseLeaveHome: this.handleMouseLeaveHome,
                 handleMouseEnterHeart: this.handleMouseEnterHeart,
                 handleMouseLeaveHeart: this.handleMouseLeaveHeart,
+                handleClickHome: this.handleClickHome,
+                handleClickHeart: this.handleClickHeart,
             },
         };
     }
+    // this
+    componentDidMount() {
+        // this.setState({ categories: this.getInitialSubredditData() }, () => {
+        //     this.fetchBasedOnWeights();
+        // });
+    }
 
+    // NavBar
     handleMouseEnterHome = (e) => {
         this.setState((prevState) => {
             const newNavData = cloneDeep(prevState.navData);
@@ -146,6 +111,9 @@ class App extends React.Component {
                 navData: newNavData,
             };
         });
+    };
+    handleClickHome = (e) => {
+        this.setState({ mediaObjects: [], currentPage: "homePage" });
     };
     handleMouseEnterHeart = (e) => {
         this.setState((prevState) => {
@@ -165,7 +133,22 @@ class App extends React.Component {
             };
         });
     };
+    handleClickHeart = (e) => {
+        const newMediaObjects = cloneDeep(this.state.heartedMedia);
+        console.log("handleClickHeart -> newMediaObjects", newMediaObjects);
+        this.setState(
+            {
+                mediaObjects: [],
+                currentPage: "heartedPage",
+                mediaObjects: newMediaObjects,
+            },
+            () => {
+                console.log(this.state);
+            }
+        );
+    };
 
+    // HomePage
     handleCategoryClick = (e) => {
         console.log(e.target.value);
         this.setState(
@@ -181,19 +164,7 @@ class App extends React.Component {
         );
     };
 
-    handleClick = () => {
-        console.log("clicked");
-        this.setState({ mediaObjects: [], currentPage: "cats" }, () => {
-            this.fetchBasedOnWeights();
-        });
-    };
-
-    componentDidMount() {
-        // this.setState({ categories: this.getInitialSubredditData() }, () => {
-        //     this.fetchBasedOnWeights();
-        // });
-    }
-
+    // Media
     getInitialSubredditData = () => {
         const newCategories = cloneDeep(this.state.categories);
 
@@ -213,20 +184,15 @@ class App extends React.Component {
             };
         }
 
-        // console.log(newCategories);
-
         const normalizedInitialData = this.getNormalizedSubredditData(
             newCategories
         );
-        // console.log(normalizedInitialData);
 
         return normalizedInitialData;
     };
-
     getNormalizedSubredditData = (categories) => {
         for (const categoryName in categories) {
             let sum = 0;
-            // console.log(categoryName);
             for (const subredditName in categories[categoryName]) {
                 const subredditObj = categories[categoryName][subredditName];
                 sum += subredditObj.weight;
@@ -235,15 +201,12 @@ class App extends React.Component {
             for (const subredditName in categories[categoryName]) {
                 const subredditObj = categories[categoryName][subredditName];
                 subredditObj.normalizedWeight = subredditObj.weight / sum;
-                // console.log(subredditObj.normalizedWeight);
             }
         }
 
         return categories;
     };
-
     fetchBasedOnWeights = () => {
-        // console.log("fetching based on weights");
         const maxImages = 25;
 
         const subredditsToFetchFrom = {};
@@ -258,8 +221,6 @@ class App extends React.Component {
                 this.state.categories[this.state.currentPage]
             );
             let data;
-
-            // console.log(names);
 
             while (random > 0) {
                 data = this.state.categories[this.state.currentPage][
@@ -286,7 +247,6 @@ class App extends React.Component {
             }
         }
 
-        // console.log("result");
         // console.log(subredditsToFetchFrom);
 
         for (const name in subredditsToFetchFrom) {
@@ -296,11 +256,7 @@ class App extends React.Component {
             );
         }
     };
-
-    // index for what?
     fetchImageFromSubreddit = (name, numImages) => {
-        // console.log("fetching...");
-
         const apiCall = `https://www.reddit.com/r/${name}/hot.json`;
         const config = {
             params: {
@@ -362,7 +318,6 @@ class App extends React.Component {
 
                     switch (postHint) {
                         case "rich:video": // gif
-                            // console.log("gif");
                             mediaObject.type = "gif";
                             mediaObject.subreddit = `${postObject.data.subreddit}`;
                             mediaObject.url = `${postObject.data.secure_media.oembed.thumbnail_url}`; // compressed gif, can get uncompressed version
@@ -371,7 +326,6 @@ class App extends React.Component {
 
                             break;
                         case "hosted:video": // reddit video
-                            // console.log("reddit video");
                             mediaObject.type = "reddit video";
                             mediaObject.subreddit = `${postObject.data.subreddit}`;
 
@@ -387,7 +341,6 @@ class App extends React.Component {
                                 postObject.data.media.reddit_video.width;
                             break;
                         case "image": // image
-                            // console.log("image");
                             mediaObject.type = "image";
                             mediaObject.subreddit = `${postObject.data.subreddit}`;
 
@@ -412,8 +365,6 @@ class App extends React.Component {
 
                 // update subreddit[index].afterId
                 const newCategories = cloneDeep(this.state.categories);
-                console.log("newCategories:");
-                console.log(newCategories);
 
                 newCategories[this.state.currentPage][name].afterId = afterId;
 
@@ -425,9 +376,7 @@ class App extends React.Component {
 
             .catch((e) => {
                 if (e.message === "duplicate after ids found") {
-                    // console.log("duplicate after ids found");
                 } else if (e.message === "duplicate media ids found") {
-                    // console.log("duplicate media ids found");
                 } else {
                     console.error("unknown error in fetchImageFromSubreddit:"); // cont here
                     console.log(e);
@@ -435,46 +384,59 @@ class App extends React.Component {
                 }
             });
     };
+    handleClickMediaHeart = (mediaObject) => {
+        if (this.state.currentPage === "heartedPage") {
+            console.log("handleClickMediaHeart -> mediaObject", mediaObject);
+            const newMediaObjects = cloneDeep(this.state.mediaObjects);
 
-    handleHeartClick = (mediaObject) => {
-        const newMediaObjects = cloneDeep(this.state.mediaObjects);
-        const subredditName = mediaObject.subreddit;
-        let newCategories = cloneDeep(this.state.categories);
+            newMediaObjects.splice(mediaObject.index, 1);
 
-        // update isHeartClicked of this.state.mediaObjects
-        // update weighting of this.state.categories
-        if (this.state.mediaObjects[mediaObject.index].isHeartClicked) {
-            // should unheart
-            newMediaObjects[mediaObject.index].isHeartClicked = false;
-            newCategories[this.state.currentPage][subredditName].weight -= 10;
+            this.setState({ mediaObjects: newMediaObjects });
         } else {
-            // should heart
-            newMediaObjects[mediaObject.index].isHeartClicked = true;
-            newCategories[this.state.currentPage][subredditName].weight += 10;
-        }
+            const newMediaObjects = cloneDeep(this.state.mediaObjects);
+            const subredditName = mediaObject.subreddit;
+            let newCategories = cloneDeep(this.state.categories);
 
-        newCategories = this.getNormalizedSubredditData(newCategories);
-
-        this.setState(
-            {
-                mediaObjects: newMediaObjects,
-                categories: newCategories,
-            },
-            () => {
-                console.log(this.state);
+            // update isHeartClicked of this.state.mediaObjects
+            // update weighting of this.state.categories
+            if (this.state.mediaObjects[mediaObject.index].isHeartClicked) {
+                // should unheart
+                newMediaObjects[mediaObject.index].isHeartClicked = false;
+                newCategories[this.state.currentPage][
+                    subredditName
+                ].weight -= 10;
+            } else {
+                // should heart
+                newMediaObjects[mediaObject.index].isHeartClicked = true;
+                newCategories[this.state.currentPage][
+                    subredditName
+                ].weight += 10;
             }
-        );
+
+            newCategories = this.getNormalizedSubredditData(newCategories);
+
+            // update heartedMedia by copying the updated object in newMediaObjects
+            const newHeartedMedia = cloneDeep(this.state.heartedMedia);
+            newHeartedMedia.push(newMediaObjects[mediaObject.index]);
+            console.log(
+                "handleClickMediaHeart -> newHeartedMedia",
+                newHeartedMedia
+            );
+
+            this.setState(
+                {
+                    mediaObjects: newMediaObjects,
+                    categories: newCategories,
+                    heartedMedia: newHeartedMedia,
+                },
+                () => {}
+            );
+        }
     };
 
     render() {
-        const renderNavBar = () => {
-            return null;
-        };
-        const renderCategoryPage = () => {
-            if (
-                this.state.currentPage !== "hearted" &&
-                this.state.currentPage !== "homePage"
-            ) {
+        const renderMasonryImages = () => {
+            if (this.state.currentPage !== "homePage") {
                 return (
                     <>
                         <Row>
@@ -486,7 +448,9 @@ class App extends React.Component {
                             <Col>
                                 <MasonryImages
                                     {...this.state}
-                                    handleHeartClick={this.handleHeartClick}
+                                    handleHeartClick={
+                                        this.handleClickMediaHeart
+                                    }
                                     fetchBasedOnWeights={
                                         this.fetchBasedOnWeights
                                     }
@@ -541,14 +505,11 @@ class App extends React.Component {
                 <GlobalStyle />
                 <NavBar {...this.state.navData}></NavBar>
                 <div style={{ marginLeft: "100px" }}>
-                    <Container
-                        className="fluid .mx-0"
-                        // style={{ float: "right" }}
-                    >
+                    <Container className="fluid .mx-0">
                         <Row>
                             {/* fixed column here */}
                             <Col>
-                                {renderCategoryPage()}
+                                {renderMasonryImages()}
                                 {renderHomePage()}
                             </Col>
                             {/* fixed column here */}

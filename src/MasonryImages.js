@@ -28,12 +28,14 @@ const MasonryStyles = styled.div`
 export default function (props) {
     return (
         <>
-            <InfiniteScroll
-                dataLength={props.mediaObjects.length}
-                next={props.fetchBasedOnWeights}
-                hasMore={true}
-                style={{ overflow: "hidden" }}
-            ></InfiniteScroll>
+            {props.currentPage === "heartedPage" ? null : (
+                <InfiniteScroll
+                    dataLength={props.mediaObjects.length}
+                    next={props.fetchBasedOnWeights}
+                    hasMore={true}
+                    style={{ overflow: "hidden" }}
+                ></InfiniteScroll>
+            )}
 
             <MasonryStyles>
                 <Masonry
