@@ -22,36 +22,149 @@ import { BsHeartFill, BsHouseDoorFill } from "react-icons/bs";
 
 import NavBar from "./Components/NavBar";
 
-const dogSubreddits = [
-    "dogs_getting_dogs",
-    "AirSwimming",
-    "dogswithjobs",
-    "slammywhammies",
-    "BeachDogs",
-    "beagle",
-    "bernesemountaindogs",
-    "blurrypicturesofdogs",
-    "BorderCollie",
-    "Boxer",
-    "Bulldogs",
-    "corgi",
-    "dogpictures",
-    "dogswearinghats",
-    "germanshepherds",
-    "Greyhounds",
-    "labrador",
-    "lookatmydog",
-    "mutt",
-    "pitbulls",
-    "pug",
-    "rarepuppers",
-    "shiba",
-    "WhatsWrongWithYourDog",
-    "woof_irl",
-    "Zoomies",
-];
-
-const catSubreddits = ["MEOW_IRL", "cats"];
+const subreddits = {
+    dogs: [
+        "dogs_getting_dogs",
+        "AirSwimming",
+        "dogswithjobs",
+        "slammywhammies",
+        "BeachDogs",
+        "beagle",
+        "bernesemountaindogs",
+        "blurrypicturesofdogs",
+        "BorderCollie",
+        "Boxer",
+        "Bulldogs",
+        "corgi",
+        "dogpictures",
+        "dogswearinghats",
+        "germanshepherds",
+        "Greyhounds",
+        "labrador",
+        "lookatmydog",
+        "mutt",
+        "pitbulls",
+        "pug",
+        "rarepuppers",
+        "shiba",
+        "WhatsWrongWithYourDog",
+        "woof_irl",
+        "Zoomies",
+    ],
+    cats: [
+        "MEOW_IRL",
+        "cats",
+        "Catspotting",
+        "Kitten",
+        "FromKittenToCat",
+        "illegallybigcats",
+        "SleepingCats",
+        "grumpycats",
+        "kittens",
+        "TruckerCats",
+        "cutecats",
+        "catreactiongifs",
+        "kitty",
+        "cat",
+        "kitties",
+        "IllegallySmolCats",
+        "SeniorCats",
+        "wetcats",
+        "catpics",
+        "catpictures",
+        "kittengifs",
+        "CatGifs",
+        "SupermodelCats",
+        "blurrypicturesofcats",
+    ],
+    reptiles: [
+        "BeardedDragons",
+        "Chameleons",
+        "iguanas",
+        "leopardgeckos",
+        "snakes",
+        "Tortoises",
+        "TurtleFacts",
+        "CrestedGecko",
+        "geckos",
+        "herpetology",
+        "Lizards",
+        "MonitorLizard",
+        "reptiles",
+        "snakeswearinghats",
+        "Sneks",
+        "turtles",
+        "ballpython",
+        "GeckoSmiles",
+        "SnakesWithHats",
+        "Tortoises",
+        "turtle",
+        "turtlesonalligators",
+    ],
+    birds: [
+        "ALLTHEBIRDS",
+        "BackYardChickens",
+        "birding",
+        "birdpics",
+        "birdsofprey",
+        "duck",
+        "geese",
+        "Owls",
+        "PetDoves",
+        "birdwatching",
+        "chickens",
+        "Conures",
+        "DivorcedBirds",
+        "Finches",
+        "parrots",
+        "penguin",
+        "babyduckgifs",
+        "BirdPhotography",
+        "BirdsBeingDicks",
+        "birdswitharms",
+        "budgies",
+        "cockatiel",
+        "crows",
+        "hummingbirds",
+        "PartyParrot",
+        "ShoebillStorks",
+    ],
+    everything: [
+        "AnimalsBeingBros",
+        "babyelephantgifs",
+        "AnimalsBeingFunny",
+        "AnimalsInHats",
+        "animalssmiling",
+        "hitmanimals",
+        "petsinwigs",
+        "AnimalShaming",
+        "AnimalsBeingDerps",
+        "AnimalsStuckInThings",
+        "AnimalsWithoutNecks",
+        "Delightfullychubby",
+        "FunnyAnimals",
+        "tinyanimalsonfingers",
+        "AnimalTextGifs",
+        "AnimalsBeingJerks",
+        "AnimalsFailing",
+        "sittinglikehumans",
+        "StoppedWorking",
+        "TrollingAnimals",
+        "aww",
+        "CatsAndDogsBFF",
+        "Sleepinganimals",
+        "unlikelyfriends",
+        "ALLTHEANIMALS",
+        "awwakeup",
+        "bigboye",
+        "hardcoreaww",
+        "Teefers",
+        "brushybrushy",
+        "NatureIsFuckingLit",
+        "Pet_Renaissance",
+        "TinyUnits",
+    ],
+};
 
 const GlobalStyle = createGlobalStyle`
     * {
@@ -69,10 +182,7 @@ class App extends React.Component {
         this.state = {
             mediaObjects: [], // array of objects
             currentPage: "homePage",
-            categories: {
-                dogs: {},
-                cats: {},
-            },
+            categories: {},
             heartedMedia: [],
             navData: {
                 isHeartHovered: false,
@@ -135,7 +245,6 @@ class App extends React.Component {
     };
     handleClickHeart = (e) => {
         const newMediaObjects = cloneDeep(this.state.heartedMedia);
-        console.log("handleClickHeart -> newMediaObjects", newMediaObjects);
         this.setState(
             {
                 mediaObjects: [],
@@ -158,30 +267,24 @@ class App extends React.Component {
                 currentPage: `${e.target.value}`,
             },
             () => {
-                console.log(this.state);
+                // console.log(this.state);
                 this.fetchBasedOnWeights();
             }
         );
     };
 
-    // Media
+    // this, Media
     getInitialSubredditData = () => {
         const newCategories = cloneDeep(this.state.categories);
-
-        for (const name of dogSubreddits) {
-            newCategories.dogs[name] = {
-                weight: 1,
-                normalizedWeight: undefined,
-                afterId: undefined,
-            };
-        }
-
-        for (const name of catSubreddits) {
-            newCategories.cats[name] = {
-                weight: 1,
-                normalizedWeight: undefined,
-                afterId: undefined,
-            };
+        for (const category in subreddits) {
+            newCategories[category] = {};
+            for (const name of subreddits[category]) {
+                newCategories[category][name] = {
+                    weight: 1,
+                    normalizedWeight: undefined,
+                    afterId: undefined,
+                };
+            }
         }
 
         const normalizedInitialData = this.getNormalizedSubredditData(
@@ -386,7 +489,6 @@ class App extends React.Component {
     };
     handleClickMediaHeart = (mediaObject) => {
         if (this.state.currentPage === "heartedPage") {
-            console.log("handleClickMediaHeart -> mediaObject", mediaObject);
             const newMediaObjects = cloneDeep(this.state.mediaObjects);
 
             newMediaObjects.splice(mediaObject.index, 1);
@@ -482,16 +584,22 @@ class App extends React.Component {
                                     Cats
                                 </Button>
                                 <Button
-                                    value="dogs"
+                                    value="reptiles"
                                     onClick={this.handleCategoryClick}
                                 >
-                                    Dogs
+                                    Reptiles
                                 </Button>
                                 <Button
-                                    value="dogs"
+                                    value="birds"
                                     onClick={this.handleCategoryClick}
                                 >
-                                    Dogs
+                                    Birds
+                                </Button>
+                                <Button
+                                    value="everything"
+                                    onClick={this.handleCategoryClick}
+                                >
+                                    Everything
                                 </Button>
                             </Col>
                         </Row>
