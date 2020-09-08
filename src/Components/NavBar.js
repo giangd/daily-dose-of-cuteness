@@ -1,18 +1,8 @@
 import React from "react";
-import axios from "axios";
-import { createGlobalStyle } from "styled-components";
 import "bootstrap/dist/css/bootstrap.min.css";
-import cloneDeep from "lodash/cloneDeep";
-import { FiExternalLink } from "react-icons/fi";
 
-import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import styled from "styled-components";
 
-import Nav from "react-bootstrap/Nav";
-import NavDropdown from "react-bootstrap/NavDropdown";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-import FormControl from "react-bootstrap/FormControl";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";

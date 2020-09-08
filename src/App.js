@@ -3,7 +3,7 @@ import Heading from "./Components/Heading";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import cloneDeep from "lodash/cloneDeep";
-import MasonryImages from "./MasonryImages";
+import MasonryImages from "./Components/MasonryImages";
 
 import { createGlobalStyle } from "styled-components";
 
@@ -15,7 +15,6 @@ import HomePage from "./Components/HomePage";
 
 import NavBar from "./Components/NavBar";
 import Alert from "react-bootstrap/Alert";
-import { AiOutlineContacts } from "react-icons/ai";
 const subreddits = {
     dogs: [
         "dogs_getting_dogs",
@@ -194,13 +193,6 @@ class App extends React.Component {
     }
     // this
     componentDidMount() {
-        // localStorage.setItem("colorSetting", "#a4509b");
-        // localStorage.setItem("colorSetting", "00");
-        // console.log("App -> componentDidMount -> localStorage", localStorage);
-        // localStorage.removeItem("colorSetting");
-        // console.log("App -> componentDidMount -> localStorage", localStorage);
-        // const test = JSON.parse(localStorage["heartedMedia"]);
-        // console.log("App -> componentDidMount -> test", test);
         this.setState({
             heartedMedia: JSON.parse(localStorage["heartedMedia"]),
         });
@@ -250,19 +242,15 @@ class App extends React.Component {
         const newMediaObjects = cloneDeep(this.state.heartedMedia);
         this.setState(
             {
-                mediaObjects: [],
                 currentPage: "heartedPage",
                 mediaObjects: newMediaObjects,
             },
-            () => {
-                console.log(this.state);
-            }
+            () => {}
         );
     };
 
     // HomePage
     handleCategoryClick = (e) => {
-        console.log(e.target.value);
         this.setState(
             {
                 categories: this.getInitialSubredditData(),
@@ -270,7 +258,6 @@ class App extends React.Component {
                 currentPage: `${e.target.value}`,
             },
             () => {
-                // console.log(this.state);
                 this.fetchBasedOnWeights();
             }
         );
@@ -352,8 +339,6 @@ class App extends React.Component {
                 };
             }
         }
-
-        // console.log(subredditsToFetchFrom);
 
         for (const name in subredditsToFetchFrom) {
             this.fetchImageFromSubreddit(

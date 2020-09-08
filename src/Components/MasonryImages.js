@@ -1,5 +1,5 @@
 import React from "react";
-import Media from "./Components/Media";
+import Media from "./Media";
 import InfiniteScroll from "react-infinite-scroll-component";
 import styled from "styled-components";
 import "bootstrap/dist/css/bootstrap.min.css";

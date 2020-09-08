@@ -1,25 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-import Card from "react-bootstrap/Card";
-import OverlayTrigger from "react-bootstrap/OverlayTrigger";
-import Tooltip from "react-bootstrap/Tooltip";
-// import Button from "react-bootstrap/Button";
 
-import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
+import { AiOutlineHeart } from "react-icons/ai";
 
 import { FiExternalLink } from "react-icons/fi";
-
-/*
-
-import { FaBeer } from 'react-icons/fa';
-class Question extends React.Component {
-  render() {
-    return <h3> Lets go for a <FaBeer />? </h3>
-  }
-}
-
-
-*/
 
 // can delete, wanted to see if this could fix the overlay gradient from overflowing
 // maybe don't delete, the overflow issue was fixed somewhere
