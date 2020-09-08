@@ -192,10 +192,13 @@ class App extends React.Component {
         };
     }
     // this
+
     componentDidMount() {
-        this.setState({
-            heartedMedia: JSON.parse(localStorage["heartedMedia"]),
-        });
+        if (localStorage.getItem("heartedMedia") !== null) {
+            this.setState({
+                heartedMedia: JSON.parse(localStorage["heartedMedia"]),
+            });
+        }
     }
 
     // NavBar
