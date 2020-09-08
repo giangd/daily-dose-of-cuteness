@@ -1,22 +1,19 @@
 import React from "react";
 import styled from "styled-components";
 
-const Header = styled.header`
-    max-width: 70rem;
-    margin: 2rem auto;
-    text-align: center;
+const Wrapper = styled.div`
+    margin: 20px 0px 35px;
 `;
 
-const H1 = styled.h1`
-    font-family: "Oswald", Arial, Helvetica, sans-serif;
-    margin-bottom: 1em;
-`;
-
-export default function () {
+export default function (props) {
+    const heading =
+        props.currentPage.charAt(0).toUpperCase() + props.currentPage.slice(1);
     return (
-        <Header>
-            <H1>Cute Images</H1>
-            <p>From reddit.com/r/aww</p>
-        </Header>
+        <Wrapper>
+            <h1 className="display-4 text-center">🐍{heading}🦎</h1>
+            {/* <p className="lead text-center">
+                🌈 A few cute pictures a day keeps the sadness away 🤗
+            </p> */}
+        </Wrapper>
     );
 }

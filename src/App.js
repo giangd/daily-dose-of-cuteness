@@ -1,24 +1,17 @@
 import React from "react";
 import Heading from "./Components/Heading";
 import axios from "axios";
-import { createGlobalStyle } from "styled-components";
 import "bootstrap/dist/css/bootstrap.min.css";
 import cloneDeep from "lodash/cloneDeep";
 import MasonryImages from "./MasonryImages";
-import { FiExternalLink } from "react-icons/fi";
 
-import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
-import styled from "styled-components";
+import { createGlobalStyle } from "styled-components";
 
-import Nav from "react-bootstrap/Nav";
-import NavDropdown from "react-bootstrap/NavDropdown";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-import FormControl from "react-bootstrap/FormControl";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import { BsHeartFill, BsHouseDoorFill } from "react-icons/bs";
+
+import HomePage from "./Components/HomePage";
 
 import NavBar from "./Components/NavBar";
 
@@ -174,31 +167,9 @@ const GlobalStyle = createGlobalStyle`
 
     &.app {
         position: relative;
-        
-    }
-
-/* &.body {
-        background-color:#f8f8f8;
-
-} */
-`;
-
-const CustomButton = styled(Button)`
-    border-color: ${(props) => props.color} !important;
-    /* color: ${(props) => props.color}; */
-    background: ${(props) => props.color} !important;
-    color: white;
-
-    &:hover {
-        color: rgb(230, 230, 230);
-    }
-    &:active {
-        background: ${(props) => props.color} !important;
-    }
-    &:focus {
-        box-shadow: none !important;
     }
 `;
+
 class App extends React.Component {
     constructor(props) {
         super(props);
@@ -566,7 +537,9 @@ class App extends React.Component {
                     <>
                         <Row>
                             <Col>
-                                <Heading></Heading>
+                                <Heading
+                                    currentPage={this.state.currentPage}
+                                ></Heading>
                             </Col>
                         </Row>
                         <Row>
@@ -590,66 +563,9 @@ class App extends React.Component {
         const renderHomePage = () => {
             if (this.state.currentPage === "homePage") {
                 return (
-                    <>
-                        <Row>
-                            <Col>
-                                <h1 className="display-4 text-center">
-                                    Daily Dose of Cuteness
-                                </h1>
-                                <p className="lead text-center">
-                                    🌈 A few cute pictures a day keeps the
-                                    sadness away 🤗
-                                </p>
-                            </Col>
-                        </Row>
-
-                        <Row className="text-center">
-                            <Col></Col>
-                            <Col xs={3}>
-                                <CustomButton
-                                    value="everything"
-                                    // variant="outline-primary"
-                                    color={"#138715"}
-                                    onClick={this.handleCategoryClick}
-                                >
-                                    EVERYTHING
-                                </CustomButton>
-                                <CustomButton
-                                    value="dogs"
-                                    // variant="outline-primary"
-                                    color={"#304CC8"}
-                                    onClick={this.handleCategoryClick}
-                                >
-                                    Dogs
-                                </CustomButton>
-                                <CustomButton
-                                    value="cats"
-                                    // variant="outline-primary"
-                                    color={"#4E2388"}
-                                    onClick={this.handleCategoryClick}
-                                >
-                                    Cats
-                                </CustomButton>
-                                <CustomButton
-                                    value="reptiles"
-                                    // variant="outline-primary"
-                                    color={"#DA9101"}
-                                    onClick={this.handleCategoryClick}
-                                >
-                                    Reptiles
-                                </CustomButton>
-                                <CustomButton
-                                    value="birds"
-                                    // variant="outline-primary"
-                                    color={"#CA302F"}
-                                    onClick={this.handleCategoryClick}
-                                >
-                                    Birds
-                                </CustomButton>
-                            </Col>
-                            <Col></Col>
-                        </Row>
-                    </>
+                    <HomePage
+                        handleCategoryClick={this.handleCategoryClick}
+                    ></HomePage>
                 );
             }
         };
@@ -658,15 +574,13 @@ class App extends React.Component {
             <div className="app">
                 <GlobalStyle />
                 <NavBar {...this.state.navData}></NavBar>
-                <div style={{ marginLeft: "100px" }}>
-                    <Container className="fluid .mx-0">
+                <div style={{ marginLeft: "80px", padding: "0 50px 0 50px" }}>
+                    <Container fluid>
                         <Row>
-                            {/* fixed column here */}
                             <Col>
                                 {renderMasonryImages()}
                                 {renderHomePage()}
                             </Col>
-                            {/* fixed column here */}
                         </Row>
                     </Container>
                 </div>
