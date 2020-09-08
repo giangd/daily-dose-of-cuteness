@@ -27,6 +27,7 @@ const NavBar = styled.div`
     left: 0px;
     box-shadow: 3px 0 10px -5px #c1c1c1;
     padding-top: 12px;
+    z-index: 1000;
 `;
 
 const NavCol = styled(Col)`

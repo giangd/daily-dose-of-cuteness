@@ -14,7 +14,8 @@ import Col from "react-bootstrap/Col";
 import HomePage from "./Components/HomePage";
 
 import NavBar from "./Components/NavBar";
-
+import Alert from "react-bootstrap/Alert";
+import { AiOutlineContacts } from "react-icons/ai";
 const subreddits = {
     dogs: [
         "dogs_getting_dogs",
@@ -178,6 +179,7 @@ class App extends React.Component {
             currentPage: "homePage",
             categories: {},
             heartedMedia: [],
+            alertText: undefined,
             navData: {
                 isHeartHovered: false,
                 isHomeHovered: false,
@@ -484,9 +486,7 @@ class App extends React.Component {
     handleClickMediaHeart = (mediaObject) => {
         if (this.state.currentPage === "heartedPage") {
             const newMediaObjects = cloneDeep(this.state.mediaObjects);
-
             newMediaObjects.splice(mediaObject.index, 1);
-
             this.setState({ mediaObjects: newMediaObjects });
         } else {
             const newMediaObjects = cloneDeep(this.state.mediaObjects);
@@ -497,6 +497,7 @@ class App extends React.Component {
             // update weighting
             // update heartedMedia
             let newHeartedMedia = cloneDeep(this.state.heartedMedia);
+            let moreOrLessText;
             if (this.state.mediaObjects[mediaObject.index].isHeartClicked) {
                 // should unheart
                 newMediaObjects[mediaObject.index].isHeartClicked = false;
@@ -508,6 +509,8 @@ class App extends React.Component {
                 newCategories[this.state.currentPage][
                     subredditName
                 ].weight -= 10;
+
+                moreOrLessText = "less";
             } else {
                 // should heart
                 newMediaObjects[mediaObject.index].isHeartClicked = true;
@@ -517,17 +520,37 @@ class App extends React.Component {
                 newCategories[this.state.currentPage][
                     subredditName
                 ].weight += 10;
+
+                moreOrLessText = "more";
             }
 
+            const oldPercent = Math.round(
+                newCategories[this.state.currentPage][subredditName]
+                    .normalizedWeight * 100
+            );
             newCategories = this.getNormalizedSubredditData(newCategories);
+            const newPercent = Math.round(
+                newCategories[this.state.currentPage][subredditName]
+                    .normalizedWeight * 100
+            );
+
+            const newAlertText = `You'll see ${moreOrLessText} things from ${subredditName}! ${oldPercent}% ➜ ${newPercent}%`;
 
             this.setState(
                 {
                     mediaObjects: newMediaObjects,
                     categories: newCategories,
                     heartedMedia: newHeartedMedia,
+                    alertText: newAlertText,
+                    showAlert: true,
                 },
-                () => {}
+                () => {
+                    setTimeout(() => {
+                        if (this.state.alertText === newAlertText) {
+                            this.setState({ showAlert: false });
+                        }
+                    }, 3000);
+                }
             );
         }
     };
@@ -575,6 +598,23 @@ class App extends React.Component {
         return (
             <div className="app">
                 <GlobalStyle />
+                {this.state.showAlert && (
+                    <Alert
+                        variant="primary"
+                        className="text-center"
+                        style={{
+                            position: "fixed",
+                            left: "0px",
+                            right: "0px",
+                            zIndex: 1,
+                            marginLeft: "auto",
+                            marginRight: "auto",
+                        }}
+                    >
+                        {this.state.alertText}
+                    </Alert>
+                )}
+
                 <NavBar {...this.state.navData}></NavBar>
                 <div style={{ marginLeft: "80px", padding: "0 50px 0 50px" }}>
                     <Container fluid>
