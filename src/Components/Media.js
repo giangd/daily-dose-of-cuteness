@@ -180,6 +180,8 @@ export default class extends React.Component {
                 <LinkOverlay>
                     <LinkButton
                         href={`https://reddit.com${this.props.redditLink}`}
+                        rel={"nofollow noopener"}
+                        target={"_blank"}
                     >
                         <LinkText>{this.props.subreddit}</LinkText>
                         <LinkIcon />
