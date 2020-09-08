@@ -194,9 +194,16 @@ class App extends React.Component {
     }
     // this
     componentDidMount() {
-        // this.setState({ categories: this.getInitialSubredditData() }, () => {
-        //     this.fetchBasedOnWeights();
-        // });
+        // localStorage.setItem("colorSetting", "#a4509b");
+        // localStorage.setItem("colorSetting", "00");
+        // console.log("App -> componentDidMount -> localStorage", localStorage);
+        // localStorage.removeItem("colorSetting");
+        // console.log("App -> componentDidMount -> localStorage", localStorage);
+        // const test = JSON.parse(localStorage["heartedMedia"]);
+        // console.log("App -> componentDidMount -> test", test);
+        this.setState({
+            heartedMedia: JSON.parse(localStorage["heartedMedia"]),
+        });
     }
 
     // NavBar
@@ -487,6 +494,11 @@ class App extends React.Component {
         if (this.state.currentPage === "heartedPage") {
             const newMediaObjects = cloneDeep(this.state.mediaObjects);
             newMediaObjects.splice(mediaObject.index, 1);
+
+            localStorage.setItem(
+                "heartedMedia",
+                JSON.stringify(newMediaObjects)
+            );
             this.setState({ mediaObjects: newMediaObjects });
         } else {
             const newMediaObjects = cloneDeep(this.state.mediaObjects);
@@ -535,6 +547,11 @@ class App extends React.Component {
             );
 
             const newAlertText = `You'll see ${moreOrLessText} things from ${subredditName}! ${oldPercent}% ➜ ${newPercent}%`;
+
+            localStorage.setItem(
+                "heartedMedia",
+                JSON.stringify(newHeartedMedia)
+            );
 
             this.setState(
                 {
