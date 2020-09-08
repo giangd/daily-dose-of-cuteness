@@ -1,9 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 
-import { AiOutlineHeart } from "react-icons/ai";
-
 import { FiExternalLink } from "react-icons/fi";
+
+import { BsHeartFill, BsHeart } from "react-icons/bs";
 
 // can delete, wanted to see if this could fix the overlay gradient from overflowing
 // maybe don't delete, the overflow issue was fixed somewhere
@@ -50,7 +50,7 @@ const Overlay = styled.div`
     display: flex;
     justify-content: center;
 
-    overflow: hidden;
+    /* overflow: hidden; */
 
     &:hover {
         background: rgb(0, 0, 0);
@@ -77,7 +77,7 @@ const LinkButton = styled.a`
     height: auto;
     background-color: Transparent;
     border: none;
-    overflow: hidden;
+    /* overflow: hidden; */
 
     &:link {
         color: white;
@@ -126,20 +126,29 @@ const HeartButton = styled.button`
     }
     &:hover {
         outline: 0;
+        stroke: red !important;
     }
 `;
 
-const HeartIcon = styled(AiOutlineHeart)`
+const HeartOutlineIcon = styled(BsHeart)`
     position: relative;
     opacity: 100;
-    width: 80px;
+    width: 100%;
     height: auto;
-    stroke-width: 1px;
-    stroke: red;
-    margin-left: -10px;
-    margin-top: -10px;
 
-    fill: ${(props) => (props.clicked === "true" ? "red" : "white")};
+    fill: white;
+    &:hover {
+        fill: red;
+    }
+`;
+
+const HeartFilledIcon = styled(BsHeartFill)`
+    position: relative;
+    opacity: 100;
+    width: 100%;
+    height: auto;
+
+    fill: red;
 `;
 
 export default class extends React.Component {
@@ -178,9 +187,14 @@ export default class extends React.Component {
                 </LinkOverlay>
                 <HeartOverlay onClick={this.handleHeartClick}>
                     <HeartButton>
-                        <HeartIcon
+                        {this.props.isHeartClicked ? (
+                            <HeartFilledIcon></HeartFilledIcon>
+                        ) : (
+                            <HeartOutlineIcon></HeartOutlineIcon>
+                        )}
+                        {/* <HeartIcon
                             clicked={this.props.isHeartClicked.toString()}
-                        />
+                        /> */}
                     </HeartButton>
                 </HeartOverlay>
             </>
