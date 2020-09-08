@@ -18,6 +18,23 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { BsHeartFill, BsHouseDoorFill } from "react-icons/bs";
 
+const NavBar = styled.div`
+    position: fixed;
+    background-color: #fff;
+    border-color: #fff;
+    height: 100vh;
+    width: 80px;
+    left: 0px;
+    box-shadow: 3px 0 10px -5px #c1c1c1;
+    padding-top: 12px;
+`;
+
+const NavCol = styled(Col)`
+    & * {
+        margin-bottom: 12px;
+    }
+`;
+
 const NavButton = styled.button`
     position: relative;
     width: 50px;
@@ -38,61 +55,47 @@ const NavButton = styled.button`
 `;
 
 const HomeIcon = styled(BsHouseDoorFill)`
-    width: 40px;
+    width: 45px;
     height: auto;
-    stroke: grey;
-    fill: grey;
+    stroke: ${(props) => props.color};
+    fill: ${(props) => props.color};
 `;
 const HomeHoveredIcon = styled(BsHouseDoorFill)`
-    width: 40px;
+    width: 45px;
     height: auto;
-    stroke: red;
-    fill: red;
+    stroke: ${(props) => props.color};
+    fill: ${(props) => props.color};
 `;
 
 const HeartIcon = styled(BsHeartFill)`
-    width: 40px;
+    width: 45px;
     height: auto;
-    stroke: grey;
-    fill: grey;
+    stroke: ${(props) => props.color};
+    fill: ${(props) => props.color};
 `;
 const HeartHoveredIcon = styled(BsHeartFill)`
-    width: 40px;
+    width: 45px;
     height: auto;
-    stroke: red;
-    fill: red;
+    stroke: ${(props) => props.color};
+    fill: ${(props) => props.color};
 `;
 
 export default function (props) {
     // console.log(props);
     return (
-        <div
-            className="navBar"
-            style={{
-                position: "fixed",
-                backgroundColor: "darkBlue",
-                height: "100vh",
-                width: "100px",
-                left: "0px",
-            }}
-        >
+        <NavBar>
             <Container>
-                <Row className="block-center" style={{ height: "100vh" }}>
-                    <Col
-                        style={{
-                            textAlign: "center",
-                            border: "1px solid",
-                        }}
-                    >
+                <Row style={{ height: "100vh" }}>
+                    <NavCol>
                         <NavButton
                             onMouseEnter={props.handleMouseEnterHome}
                             onMouseLeave={props.handleMouseLeaveHome}
                             onClick={props.handleClickHome}
                         >
                             {props.isHomeHovered ? (
-                                <HomeHoveredIcon />
+                                <HomeHoveredIcon color={"rgb(255, 0, 0)"} />
                             ) : (
-                                <HomeIcon />
+                                <HomeIcon color={"rgb(150,150,150)"} />
                             )}
                         </NavButton>
                         <NavButton
@@ -101,14 +104,14 @@ export default function (props) {
                             onClick={props.handleClickHeart}
                         >
                             {props.isHeartHovered ? (
-                                <HeartHoveredIcon />
+                                <HeartHoveredIcon color={"rgb(255,0,0)"} />
                             ) : (
-                                <HeartIcon />
+                                <HeartIcon color={"rgb(150,150,150)"} />
                             )}
                         </NavButton>
-                    </Col>
+                    </NavCol>
                 </Row>
             </Container>
-        </div>
+        </NavBar>
     );
 }
