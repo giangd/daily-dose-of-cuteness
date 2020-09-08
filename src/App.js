@@ -493,31 +493,33 @@ class App extends React.Component {
             const subredditName = mediaObject.subreddit;
             let newCategories = cloneDeep(this.state.categories);
 
-            // update isHeartClicked of this.state.mediaObjects
-            // update weighting of this.state.categories
+            // update isHeartClicked
+            // update weighting
+            // update heartedMedia
+            let newHeartedMedia = cloneDeep(this.state.heartedMedia);
             if (this.state.mediaObjects[mediaObject.index].isHeartClicked) {
                 // should unheart
                 newMediaObjects[mediaObject.index].isHeartClicked = false;
+
+                newHeartedMedia = newHeartedMedia.filter((element) => {
+                    return element.id !== newMediaObjects[mediaObject.index].id;
+                });
+
                 newCategories[this.state.currentPage][
                     subredditName
                 ].weight -= 10;
             } else {
                 // should heart
                 newMediaObjects[mediaObject.index].isHeartClicked = true;
+
+                newHeartedMedia.push(newMediaObjects[mediaObject.index]);
+
                 newCategories[this.state.currentPage][
                     subredditName
                 ].weight += 10;
             }
 
             newCategories = this.getNormalizedSubredditData(newCategories);
-
-            // update heartedMedia by copying the updated object in newMediaObjects
-            const newHeartedMedia = cloneDeep(this.state.heartedMedia);
-            newHeartedMedia.push(newMediaObjects[mediaObject.index]);
-            console.log(
-                "handleClickMediaHeart -> newHeartedMedia",
-                newHeartedMedia
-            );
 
             this.setState(
                 {

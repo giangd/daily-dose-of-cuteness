@@ -34,9 +34,19 @@ const CustomButton = styled(Button)`
         box-shadow: none !important;
     }
 `;
+const Wrapper = styled.div`
+    h1 {
+        margin-top: 20px;
+    }
+    p {
+        margin-top: 10px;
+        margin-bottom: 30px;
+    }
+`;
+
 export default function (props) {
     return (
-        <>
+        <Wrapper>
             <Row>
                 <Col>
                     <h1 className="display-4 text-center">
@@ -94,6 +104,6 @@ export default function (props) {
                 </Col>
                 <Col></Col>
             </Row>
-        </>
+        </Wrapper>
     );
 }

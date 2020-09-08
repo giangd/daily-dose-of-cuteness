@@ -6,11 +6,11 @@ const Wrapper = styled.div`
 `;
 
 export default function (props) {
-    const heading =
+    const headingText =
         props.currentPage.charAt(0).toUpperCase() + props.currentPage.slice(1);
     return (
         <Wrapper>
-            <h1 className="display-4 text-center">🐍{heading}🦎</h1>
+            <h1 className="display-4 text-center">🐍{headingText}🦎</h1>
             {/* <p className="lead text-center">
                 🌈 A few cute pictures a day keeps the sadness away 🤗
             </p> */}
