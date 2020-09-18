@@ -182,12 +182,16 @@ class App extends React.Component {
             navData: {
                 isHeartHovered: false,
                 isHomeHovered: false,
+                isGithubHovered: false,
                 handleMouseEnterHome: this.handleMouseEnterHome,
                 handleMouseLeaveHome: this.handleMouseLeaveHome,
                 handleMouseEnterHeart: this.handleMouseEnterHeart,
                 handleMouseLeaveHeart: this.handleMouseLeaveHeart,
+                handleMouseEnterGithub: this.handleMouseEnterGithub,
+                handleMouseLeaveGithub: this.handleMouseLeaveGithub,
                 handleClickHome: this.handleClickHome,
                 handleClickHeart: this.handleClickHeart,
+                handleClickGithub: this.handleClickGithub,
             },
         };
     }
@@ -249,6 +253,31 @@ class App extends React.Component {
                 mediaObjects: newMediaObjects,
             },
             () => {}
+        );
+    };
+
+    handleMouseEnterGithub = (e) => {
+        this.setState((prevState) => {
+            const newNavData = cloneDeep(prevState.navData);
+            newNavData.isGithubHovered = true;
+            return {
+                navData: newNavData,
+            };
+        });
+    };
+    handleMouseLeaveGithub = (e) => {
+        this.setState((prevState) => {
+            const newNavData = cloneDeep(prevState.navData);
+            newNavData.isGithubHovered = false;
+            return {
+                navData: newNavData,
+            };
+        });
+    };
+    handleClickGithub = (e) => {
+        window.open(
+            "https://github.com/giangd/daily-dose-of-cuteness",
+            "_blank"
         );
     };
 
@@ -403,12 +432,12 @@ class App extends React.Component {
             });
         } catch (err) {
             if (err.message === "duplicate after ids found") {
-                console.log("duplicate afterId's gracefully handled");
+                // console.log("duplicate afterId's gracefully handled");
             } else if (err.message === "duplicate media ids found") {
-                console.log("duplicate media id gracefully handled");
+                // console.log("duplicate media id gracefully handled");
             } else {
-                console.error("unknown error in fetchImageFromSubreddit:");
-                console.log(err);
+                // console.error("unknown error in fetchImageFromSubreddit:");
+                // console.log(err);
             }
         }
     };

@@ -8,6 +8,8 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { BsHeartFill, BsHouseDoorFill } from "react-icons/bs";
 
+import { AiOutlineGithub } from "react-icons/ai";
+
 const NavBar = styled.div`
     position: fixed;
     background-color: #fff;
@@ -22,7 +24,7 @@ const NavBar = styled.div`
 
 const NavCol = styled(Col)`
     & * {
-        margin-bottom: 12px;
+        margin-bottom: 15px;
     }
 `;
 
@@ -71,6 +73,14 @@ const HeartHoveredIcon = styled(BsHeartFill)`
     fill: ${(props) => props.color};
 `;
 
+const GithubIcon = styled(AiOutlineGithub)`
+    margin-top: -7px;
+    width: 47px;
+    height: auto;
+    stroke: ${(props) => props.color};
+    fill: ${(props) => props.color};
+`;
+
 export default function (props) {
     // console.log(props);
     return (
@@ -98,6 +108,17 @@ export default function (props) {
                                 <HeartHoveredIcon color={"rgb(255,0,0)"} />
                             ) : (
                                 <HeartIcon color={"rgb(150,150,150)"} />
+                            )}
+                        </NavButton>
+                        <NavButton
+                            onMouseEnter={props.handleMouseEnterGithub}
+                            onMouseLeave={props.handleMouseLeaveGithub}
+                            onClick={props.handleClickGithub}
+                        >
+                            {props.isGithubHovered ? (
+                                <GithubIcon color={"rgb(255,0,0)"} />
+                            ) : (
+                                <GithubIcon color={"rgb(150,150,150)"} />
                             )}
                         </NavButton>
                     </NavCol>
