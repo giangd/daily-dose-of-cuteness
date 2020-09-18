@@ -46,7 +46,8 @@ const HeartOverlay = styled.div`
 
 const Overlay = styled.div`
     position: relative;
-    height: auto;
+    height: ${(props) => (props.height ? props.height : "auto")};
+
     display: flex;
     justify-content: center;
 
@@ -70,6 +71,23 @@ const Overlay = styled.div`
         }
     }
 `;
+
+// const Button = styled.button`
+//   /* Adapt the colors based on primary prop */
+//   background: ${props => props.primary ? "palevioletred" : "white"};
+//   color: ${props => props.primary ? "white" : "palevioletred"};
+
+//   font-size: 1em;
+//   margin: 1em;
+//   padding: 0.25em 1em;
+//   border: 2px solid palevioletred;
+//   border-radius: 3px;
+// `;
+
+// render(
+//   <div>
+//     <Button>Normal</Button>
+//     <Button primary>Primary</Button>
 
 const LinkButton = styled.a`
     position: relative;
@@ -152,14 +170,14 @@ const HeartFilledIcon = styled(BsHeartFill)`
 `;
 
 export default class extends React.Component {
-    constructor(props) {
-        super();
-        this.state = {
-            ...props,
-            // videoRef: React.createRef(),
-            // isHeartClicked: false,
-        };
-    }
+    // constructor(props) {
+    //     super();
+    //     this.state = {
+    //         ...props,
+    //         // videoRef: React.createRef(),
+    //         // isHeartClicked: false,
+    //     };
+    // }
 
     // handleClick = () => {
     //     console.log("inside handleClick");
@@ -172,6 +190,7 @@ export default class extends React.Component {
 
     handleHeartClick = () => {
         this.props.handleHeartClick(this.props);
+        console.log(this.props);
     };
 
     render() {
@@ -207,7 +226,7 @@ export default class extends React.Component {
             case "gif":
                 return (
                     <MediaWrapper>
-                        <Overlay>
+                        <Overlay height={this.props.height}>
                             {overlayContent}
                             <Image src={this.props.url} alt=""></Image>
                         </Overlay>
@@ -216,7 +235,7 @@ export default class extends React.Component {
             case "reddit video":
                 return (
                     <MediaWrapper>
-                        <Overlay>
+                        <Overlay height={this.props.height}>
                             {overlayContent}
                             <Video
                                 // ref={this.props.videoRef}
