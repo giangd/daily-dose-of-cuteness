@@ -350,133 +350,67 @@ class App extends React.Component {
             );
         }
     };
-    fetchImageFromSubreddit = (name, numImages) => {
-        const apiCall = `https://www.reddit.com/r/${name}/hot.json`;
+    fetchImageFromSubreddit = async (name, numImages) => {
         const config = {
-            params: {
-                // t: "all",
-                raw_json: 1,
-                limit: numImages - 1,
-                after: `${
-                    this.state.categories[this.state.currentPage][name].afterId
-                }`,
-            },
             crossdomain: true,
         };
 
-        axios
-            .get(apiCall, config)
-            .then((response) => {
-                let afterId = response.data.data.after;
+        const apiUrl = "https://polar-escarpment-41746.herokuapp.com/api";
+        const after = this.state.categories[this.state.currentPage][name]
+            .afterId;
 
-                // if any of the subreddits have this afterId, throw new Error("Error");
-                for (const name in this.state.categories[
-                    this.state.currentPage
-                ]) {
-                    if (
-                        this.state.categories[this.state.currentPage][name]
-                            .afterId === afterId
-                    ) {
-                        throw new Error("duplicate after ids found");
+        try {
+            const {
+                data: { afterId, mediaObjects },
+            } = await axios.get(
+                `${apiUrl}/${name}/${numImages}/${after}`,
+                config
+            );
+
+            // perform checks
+            // if any of the subreddits have this afterId, throw error
+            for (const name in this.state.categories[this.state.currentPage]) {
+                if (
+                    this.state.categories[this.state.currentPage][name]
+                        .afterId === afterId
+                ) {
+                    throw new Error("duplicate after ids found");
+                }
+            }
+
+            // if any of the mediaObjects have this postId, throw error
+            for (const mediaObject of mediaObjects) {
+                for (const stateMediaObject of this.state.mediaObjects) {
+                    if (stateMediaObject.id === `${mediaObject.id}`) {
+                        throw new Error("duplicate media ids found");
                     }
                 }
+            }
 
-                let arrayOfPostObjects;
-                arrayOfPostObjects = [...response.data.data.children];
+            // no duplicates ids or afterId's, update state
 
-                let mediaObjects = [];
-                for (let postObject of arrayOfPostObjects) {
-                    let postHint = postObject.data.post_hint;
+            const newMediaObjects = cloneDeep(this.state.mediaObjects).concat(
+                mediaObjects
+            );
 
-                    // if any of the mediaObjects have this postId, throw error
-                    for (const object of this.state.mediaObjects) {
-                        if (object.id === `${postObject.data.id}`) {
-                            throw new Error("duplicate media ids found");
-                        }
-                    }
+            // update subreddit[index].afterId
+            const newCategories = cloneDeep(this.state.categories);
+            newCategories[this.state.currentPage][name].afterId = afterId;
 
-                    let mediaObject = {
-                        type: undefined,
-                        id: undefined,
-                        subreddit: undefined,
-                        redditLink: undefined,
-                        url: undefined,
-                        posterUrl: undefined,
-                        height: undefined,
-                        width: undefined,
-                        isHeartClicked: false,
-                    };
-
-                    mediaObject.id = `${postObject.data.id}`;
-                    mediaObject.redditLink = `${postObject.data.permalink}`;
-
-                    switch (postHint) {
-                        case "rich:video": // gif
-                            mediaObject.type = "gif";
-                            mediaObject.subreddit = `${postObject.data.subreddit}`;
-                            mediaObject.url = `${postObject.data.secure_media.oembed.thumbnail_url}`; // compressed gif, can get uncompressed version
-                            mediaObject.height = `${postObject.data.secure_media.oembed.thumbnail_height}`;
-                            mediaObject.width = `${postObject.data.secure_media.oembed.thumbnail_width}`;
-
-                            break;
-                        case "hosted:video": // reddit video
-                            mediaObject.type = "reddit video";
-                            mediaObject.subreddit = `${postObject.data.subreddit}`;
-
-                            // mediaObject.url =
-                            // postObject.data.preview.images[0].source.url; // highest resolution, can get lower
-                            mediaObject.url =
-                                postObject.data.media.reddit_video.fallback_url;
-                            mediaObject.posterUrl =
-                                postObject.data.preview.images[0].source.url; // highest resolution, can get lower
-                            mediaObject.height =
-                                postObject.data.media.reddit_video.height;
-                            mediaObject.width =
-                                postObject.data.media.reddit_video.width;
-                            break;
-                        case "image": // image
-                            mediaObject.type = "image";
-                            mediaObject.subreddit = `${postObject.data.subreddit}`;
-
-                            mediaObject.url =
-                                postObject.data.preview.images[0].source.url; // highest resolution, can get lower
-                            mediaObject.height =
-                                postObject.data.preview.images[0].source.height;
-                            mediaObject.width =
-                                postObject.data.preview.images[0].source.width;
-                            break;
-                        case "link":
-                        case "self":
-                        default:
-                            continue;
-                    }
-                    mediaObjects.push(mediaObject);
-                }
-
-                const newMediaObjects = cloneDeep(
-                    this.state.mediaObjects
-                ).concat(mediaObjects);
-
-                // update subreddit[index].afterId
-                const newCategories = cloneDeep(this.state.categories);
-
-                newCategories[this.state.currentPage][name].afterId = afterId;
-
-                this.setState({
-                    mediaObjects: newMediaObjects,
-                    categories: newCategories,
-                });
-            })
-
-            .catch((e) => {
-                if (e.message === "duplicate after ids found") {
-                } else if (e.message === "duplicate media ids found") {
-                } else {
-                    console.error("unknown error in fetchImageFromSubreddit:"); // cont here
-                    console.log(e);
-                    console.log(e.message === "duplicate media ids found");
-                }
+            this.setState({
+                mediaObjects: newMediaObjects,
+                categories: newCategories,
             });
+        } catch (err) {
+            if (err.message === "duplicate after ids found") {
+                console.log("duplicate afterId's gracefully handled");
+            } else if (err.message === "duplicate media ids found") {
+                console.log("duplicate media id gracefully handled");
+            } else {
+                console.error("unknown error in fetchImageFromSubreddit:");
+                console.log(err);
+            }
+        }
     };
     handleClickMediaHeart = (mediaObject) => {
         if (this.state.currentPage === "heartedPage") {
