@@ -174,6 +174,7 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            isLoading: undefined,
             mediaObjects: [], // array of objects
             currentPage: "homePage",
             categories: {},
@@ -288,6 +289,7 @@ class App extends React.Component {
                 categories: this.getInitialSubredditData(),
                 mediaObjects: [],
                 currentPage: `${e.target.value}`,
+                isLoading: true,
             },
             () => {
                 this.fetchBasedOnWeights();
@@ -331,7 +333,7 @@ class App extends React.Component {
 
         return categories;
     };
-    fetchBasedOnWeights = () => {
+    fetchBasedOnWeights = async () => {
         const maxImages = 25;
 
         const subredditsToFetchFrom = {};
@@ -373,11 +375,12 @@ class App extends React.Component {
         }
 
         for (const name in subredditsToFetchFrom) {
-            this.fetchImageFromSubreddit(
+            await this.fetchImageFromSubreddit(
                 name,
                 subredditsToFetchFrom[name].numImages
             );
         }
+        this.setState({ isLoading: false });
     };
     fetchImageFromSubreddit = async (name, numImages) => {
         const config = {
@@ -590,6 +593,9 @@ class App extends React.Component {
                             <Col>
                                 {renderMasonryImages()}
                                 {renderHomePage()}
+                                {this.state.isLoading ? (
+                                    <h1>LOADING...</h1>
+                                ) : null}
                             </Col>
                         </Row>
                     </Container>
